@@ -1,19 +1,19 @@
-import { createMuiTheme } from '@material-ui/core/styles';
-import orange from '@material-ui/core/colors/orange';
+import { createTheme } from "@mui/material/styles";
+import blue from "@mui/material/colors/blue";
 
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#012144",
-        },
-        secondary: {
-            main: orange[500],
-        },
-        darkTheme: {
-            main: "#282c34",
-            card: "#4a4f59",
-        }
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#012144",
     },
+    secondary: {
+      main: blue[500],
+    },
+    darkTheme: {
+      main: "#282c34",
+      card: "#4a4f59",
+    },
+  },
 });
 
 export default theme;
