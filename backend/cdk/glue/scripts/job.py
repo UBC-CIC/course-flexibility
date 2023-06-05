@@ -13,6 +13,7 @@ import re
 import os
 import logging
 from collections import Counter
+import datetime
 
 import nltk
 from nltk.tokenize import sent_tokenize
@@ -34,11 +35,12 @@ MAX_QUEUE_MESSAGES = 10
 """
 This code create a temporary directory to download the artifacts for the nltk punkt tokenizer
 then add the newly created directory path to the list of directories in nltk.data.path.
-without this step the punkt tokenizer cannot be downloaded
+without this step the punkt tokenizer cannot be downloaded on AWS Glue Job
 """
 
-os.mkdir("nltk_data")
-nltk_custom_path = os.path.join(os.getcwd(), "nltk_data")
+dir_name = "nltk_data"
+os.mkdir(dir_name)
+nltk_custom_path = os.path.join(os.getcwd(), dir_name)
 nltk.data.path.append(nltk_custom_path)
 nltk.download("punkt", download_dir=nltk_custom_path)
 
@@ -165,42 +167,94 @@ def load_text_from_html(path):
 @return: Dictionary
 
 This function will take those 2 params and output a dictionary then perform regex matching to extract all
-course-code and course-num pattern in the corpus. Then it output the course code-num pair that has
-the most occurrence, which is the one that is most likely to be the actual course code and number of the corpus
+course-code and course-num pattern in the corpus. Then it considered the 2 scenarios:
++ If the regex matching results have a distinct code-num pair that has the highest occurrence, it will output that code-num pair.
+  which is the one that is most likely to be the actual course code and number of the corpus
+    e.g CPSC 110 (5 occurrences), CPSC 121 (2 occurences) -> CSPC 110 as the final result
+    
++ If the distinct code-num pairs have a similar occurrence frequency, then it output the code num pair that appears the earliest
+  into the text base on the token's position. The position means that how far into the text string it was found. You could have the token
+  CPSC 110 appears at multiple position in the text, but we consider the earliest position.
+    e.g "This course CPSC 110 is great. CSPC 110 is awesome" -> the token CPSC 110 appears at position 12 and 31 -> thus the earliest that
+    this unique token CPSC 110 appears is position 12 in the text string.
+  Again, there could be many other unique tokens that were matched and they may appears multiple times in the text, 
+  so the algorithm records the other's earliest position as well. The matching results might look like
+    e.g CPSC 110 (2 occurences, earliest pos is at character 12), CPSC 121 (2 occurences, earliest pos is at character 28) ->
+    both tokens has the same number of occurrences in the text -> CPSC 110 is the output since it first appears the earliest in the text
+    
+The rationale behind these 2 educated guess:
++ If a distinct token appears more in the text then the rest of the other distinct tokens, then it is most likely to be the
+code-num pair of the syllabus
++ If the distinct tokens has the same number of occurrences, then we must make an informed decision based on how early each distinct
+token were found in the text. This is due to the fact that for a syllabus file, the actual course's code-name is likely to be mentioned 
+at early into the text e.g. at the top (the title/header, first introduction paragraph, etc).
 
-Return examples:
-    {"code": "CSPC", "num", "110", "occurrence": 12} if a match is found, else
-    {} if no match is found
 """
 
 
 def scan_file_text(text, courseMappingSubset):
+
     # this list will eventually contain the extracted code-num pair e.g [("CPSC", "110"), ("CPSC", "121")]
     arr = []
+    # this dictionary store the earlist occurence of each distinct code-num pair tuple
+    # with the tuple as key and earliest position (integer) as value
+    # e.g {("CSPC", "110"): 15, ("CPSC", "121"): 28}
+    mapping_earliest_occurrence = {}
     for course in courseMappingSubset:
         code = course["Subject Code"]
         #regex = code + '.?1\d{2}'
         # regex = code + '.?\d{3}'
         regex = code + '.{0,2}\d{3}'
         # instead of finding the first pattern matched, it looks for all pattern within the file text
-        # thus it might returns more than one distinct code-num for the same corpus
-        reg_findall = re.findall(regex, text, re.IGNORECASE)
-        if len(reg_findall) > 0:
-            for match in reg_findall:
+        # thus it might returns more than one distinct code-num for the same corpus. Using finditer
+        # here let us have access to the list of regex matchObject instead of just a list of matched
+        # tokens (strings)
+        # matchObject example: <re.Match object; span=(7, 14), match='CSPC 110'>
+        reg_finditer = re.finditer(regex, text, re.IGNORECASE)
+        # turn the callable_iterable to a list
+        reg_finditer_list = list(reg_finditer)
+        if len(reg_finditer_list) > 0:  # if at least 1 matched in found
+            for match_obj in reg_finditer_list:  # iterate thru the list of matchObject
                 # extract the course code and number from the extracted match e.g ("CPSC", "110")
                 # uppercase the code
-                crs_code = re.search('[a-zA-Z]+', match).group().upper()
-                crs_num = re.search('\d{3}',  match).group()
+                crs_code = re.search(
+                    '[a-zA-Z]+', match_obj.group()).group().upper()
+                crs_num = re.search('\d{3}',  match_obj.group()).group()
+                start_pos = match_obj.start()  # the position of the match in the text
+                match_tuple = (crs_code, crs_num)
+                # if the unique token does not has its position stored in the dict,
+                # store the tuple as key and its earliest position as value
+                if match_tuple not in mapping_earliest_occurrence:
+                    mapping_earliest_occurrence[match_tuple] = start_pos
+                # if the unique token already has its position stored in the list,
+                # then check if this new position is smaller than the currently stored position, if so,
+                # store the new earliest position
+                else:
+                    # e.g {("CSPC", "110"): 55}, but then we encounter a CPSC 110 token at position 17 as well
+                    # thus the earliest position of the unique CPSC 110 token is actually 17
+                    # and the dict entry must be updated {("CSPC", "110"): 17}
+                    if start_pos < mapping_earliest_occurrence[match_tuple]:
+                        mapping_earliest_occurrence[match_tuple] = start_pos
                 # append the result as a tuple to the list of extracted code-num pair
-                arr.append((crs_code, crs_num))
+                arr.append(match_tuple)
 
-    # find the code-num pair that appears that has highest occurence from the list
-    most_common = Counter(arr).most_common(1)
+    # return the number of occurrence for each unique code-num pair
+    most_common = Counter(arr).most_common()
     if most_common:
+        # if there are more than 1 distinct code-num pair AND they have same frequency of occur
+        if len(most_common) > 1 and all(occ[1] == most_common[0][1] for occ in most_common):
+            # retried the distinct code-num pair with the earliest starting position from the dictionary
+            match_with_smallest_start_pos = min(
+                mapping_earliest_occurrence, key=mapping_earliest_occurrence.get)
+            return {
+                "code": match_with_smallest_start_pos[0],  # CPSC
+                "num": match_with_smallest_start_pos[1],  # 110
+                "occurrence": "using start pos",
+            }
         return {
-            "code": most_common[0][0][0],
-            "num": most_common[0][0][1],
-            "occurence": most_common[0][1]
+            "code": most_common[0][0][0],  # CSPC
+            "num": most_common[0][0][1],  # 110
+            "occurrence": most_common[0][1],  # 12
         }
     return {}
 
@@ -223,6 +277,7 @@ def extract_course_info_from_text(filePath, courseMappingSubset):
     obj = s3.Object(BUCKET_NAME, filePath)
     file = io.BytesIO(obj.get()['Body'].read())
 
+    corpus = ""
     if ".pdf" in filePath:
         corpus = " ".join(load_text_from_pdf(file))  # file
     elif ".docx" in filePath:
@@ -344,6 +399,7 @@ def process_s3_event(s3event):
             "Encountered s3:TestEvent, discarding from queue")
 
     print(syllabus_info)
+    return syllabus_info
 
 
 """
@@ -358,6 +414,7 @@ def retrieve_sqs_messages():
     sqs = boto3.resource('sqs')
     queue = sqs.get_queue_by_name(QueueName=QUEUE_NAME)  # main queue
     dlq = sqs.get_queue_by_name(QueueName=DLQ_QUEUE_NAME)  # DLQ
+    metadata = []
     while True:
         messages_to_delete = []
         for message in queue.receive_messages(MaxNumberOfMessages=MAX_QUEUE_MESSAGES):
@@ -365,7 +422,8 @@ def retrieve_sqs_messages():
             # process message body
             body_json = json.loads(message.body)
             try:
-                process_s3_event(body_json)
+                syllabus_info = process_s3_event(body_json)
+                metadata.append(syllabus_info)
 
             except JunkEventException as e:
                 print(e.message)  # print exception message
@@ -409,6 +467,10 @@ def retrieve_sqs_messages():
         # handle any errors
         else:
             delete_response = queue.delete_messages(Entries=messages_to_delete)
+
+    current_date = datetime.date.today().strftime("%Y-%m-%d")  # 2023-05-30
+    putToS3(pd.DataFrame(metadata), TEMP_BUCKET_NAME,
+            f"syllabus_metadata/metadata_{current_date}.csv")
 
 
 def main():
