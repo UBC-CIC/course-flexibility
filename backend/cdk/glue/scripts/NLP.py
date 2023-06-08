@@ -10,6 +10,7 @@ import pandas as pd
 from datetime import datetime
 import boto3
 from tqdm import tqdm
+import psycopg2
 
 # libs for NLP pre-processing
 import nltk
@@ -163,6 +164,7 @@ def load_text_from_html(path):
     return filtered_sentences
 
 def get_embeddings(content, embedder_model='all-mpnet-base-v2'):
+
     # Initialize the SentenceTransformer with the specified model
     embedder = SentenceTransformer(embedder_model, cache_folder=model_custom_path)
     # Encode the content into embeddings
@@ -177,13 +179,7 @@ def generate_semantic_reports(syllabus_path, guidelines, destination_path, embed
     if not os.path.exists(destination_path):
         os.mkdir(destination_path)
         
-    # Prepare the destination path for the semantic report and remove the existing semantic report if it exists
-    campus_destination_paths = {}
-    for campus in os.listdir(syllabus_path):
-        # this_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        if not os.path.exists(os.path.join(destination_path, campus)):
-            os.mkdir(os.path.join(destination_path, campus))
-        campus_destination_paths[campus] = os.path.join(destination_path, campus,"semantic_results_"+TIMESTAMP+".json")
+    output_file_path = os.path.join(destination_path, "semantic_similarity_results_"+TIMESTAMP+".json")
     
     # Encode the guideline statements into embeddings
     guidelines_embeddings = get_embeddings(guidelines)
@@ -201,15 +197,6 @@ def generate_semantic_reports(syllabus_path, guidelines, destination_path, embed
                 # If this syllabus file has already been analyzed in the current analysis, skip it
                 if file in list(semantic_dict.keys()):
                     continue
-
-                # Else if a previous version of the file exists
-                elif get_most_recent_file(folder_path=os.path.join(destination_path, campus), file_type="semantic"):
-                    # AND if this syllabus file has already been analyzed in the previous analysis, skip it
-                    if get_primary_keys(get_most_recent_file(folder_path=os.path.join(destination_path, campus), file_type="semantic")):
-                        if file in get_primary_keys(
-                            get_most_recent_file(
-                                folder_path=os.path.join(destination_path, campus), file_type="semantic")):
-                            continue
             
                 if file.split('.')[-1] == 'pdf':
                     # Load text from a PDF file
@@ -238,12 +225,10 @@ def generate_semantic_reports(syllabus_path, guidelines, destination_path, embed
                             semantic_dict[filename][guidelines[i]].append([filtered_sentences[hits[i][t]['corpus_id']]])
                             
             # Save the semantic results of this syllabus as a JSON file
-            #with open(campus_destination_paths[campus], "w", encoding='utf-8') as outfile:
-                #json.dump(semantic_dict, outfile, indent=4, ensure_ascii=False)
-                
-                if os.path.exists(campus_destination_paths[campus]):
+
+                if os.path.exists(output_file_path):
                     # File already exists, load the existing data
-                    with open(campus_destination_paths[campus], "r") as file:
+                    with open(output_file_path, "r") as file:
                         existing_data = json.load(file)
                     # Update the existing data with the new dictionary
                     existing_data.update(semantic_dict)
@@ -253,28 +238,114 @@ def generate_semantic_reports(syllabus_path, guidelines, destination_path, embed
                     existing_data = semantic_dict
                     
                 # Save the updated or new data to the JSON file
-                with open(campus_destination_paths[campus], "w", encoding='utf-8') as file:
+                with open(output_file_path, "w", encoding='utf-8') as file:
                     json.dump(existing_data, file, indent=4, ensure_ascii=False)
 
-    upload_files(directory=destination_path)
 
+"""
+@param question: string
+@param passage: string
+@param tokenizer: the tokenizer instance
+@param model: the model instance
+@param device: the device
+@return tuple (float, float): probability (yes, no)
+"""
+
+def predict(question, passage, tokenizer, model, device):
+    # Encode the question and passage using the tokenizer
+    sequence = tokenizer.encode_plus(question, passage, return_tensors="pt")['input_ids'].to(device)
+    encoded_sequence = tokenizer.encode_plus(question, passage, max_length=512, truncation=True, padding='max_length', return_tensors="pt")
+    sequence = encoded_sequence['input_ids'].to(device)
+    logits = model(sequence)[0]  # Perform forward pass through the model
+    probabilities = torch.softmax(logits, dim=1).detach().cpu().tolist()[0]  # Compute softmax probabilities
+    proba_yes = round(probabilities[1], 2)  # Extract the probability of "yes"
+    proba_no = round(probabilities[0], 2)  # Extract the probability of "no"
+    return proba_yes, proba_no
+
+def generate_QA_results(tokenizer, model, device, destination_path=r'model_outputs/'):
+    # Prepare the destination path for the QA results and create directories if they don't exist
+
+    input_file_path = os.path.join(destination_path, "semantic_similarity_results_"+TIMESTAMP+".json")
+    output_file_path = os.path.join(destination_path, "question_answering_results_"+TIMESTAMP+".json")
+
+    # Open the JSON file
+    with open(input_file_path, 'r') as json_file:
+        # Load the contents of the JSON file
+        data = json.load(json_file)
+
+        for syllabus_file in tqdm(list(data.keys()), desc="Analyzing the extracted sentences for each syllabus file..."):
+            qa_dict = {}
+            # If this syllabus file has already been analyzed in the current analysis, skip it
+            if syllabus_file in list(qa_dict.keys()):
+                continue
+
+            else:
+                qa_dict[syllabus_file] = {}
+                for flexibility_guideline in list(data[syllabus_file].keys()):
+                    qa_dict[syllabus_file][flexibility_guideline] = {}
+                    context = ' '.join([sentence[0] for sentence in data[syllabus_file][flexibility_guideline]])
+                    # Predict the probabilities of "yes" and "no" for the flexibility guideline
+                    proba_yes, proba_no = predict(flexibility_guideline, context, tokenizer=tokenizer, model=model, device=device)
+                    qa_dict[syllabus_file][flexibility_guideline]["yes"] = proba_yes
+                    qa_dict[syllabus_file][flexibility_guideline]["no"] = proba_no
+
+            if os.path.exists(output_file_path):
+            # File already exists, load the existing data
+                with open(output_file_path, "r") as file:
+                    existing_data = json.load(file)
+                # Update the existing data with the new dictionary
+                existing_data.update(qa_dict)
+
+            else:
+            # File doesn't exist, create a new file with the dictionary
+                existing_data = qa_dict
+
+            # Save the updated or new data to the JSON file
+            with open(output_file_path, "w", encoding='utf-8') as file:
+                json.dump(existing_data, file, indent=4, ensure_ascii=False)
+
+
+def getDbSecret():
+    # secretsmanager client to get db credentials
+    sm_client = boto3.client("secretsmanager")
+    response = sm_client.get_secret_value(
+        SecretId=DB_SECRET_NAME)["SecretString"]
+    secret = json.loads(response)
+    return secret
 
 def main():
-    # Entry point of the program
-    logger.info("Starting semantic report generation...")
-    # # Initialize the GuidelineManager and retrieve the guidelines
-    # guideline_manager = GuidelineManager()
-    # guidelines = guideline_manager.get_guidelines()
 
-    guidelines = [
-        "Online recordings of lectures can be accessed.",
-        "Questions can be posted anonymously.",
-        "Late assignments or deliverables are not accepted.",
-        "Make-up midterms are offered.",
-        "The lowest assessment grades will not count towards your total grade.",
-        "Your top M out of N scores will count towards your final grade.",
-        "There are multiple attempts for assignments."
-    ]
+    # Entry point of the program
+
+    # SEMANTIC-SIMILARITY (SEMANTIC-SEARCH)
+
+    logger.info("Starting semantic report generation...")
+
+    dbSecret = getDbSecret()
+
+    connection = psycopg2.connect(
+        user=dbSecret["username"],
+        password=dbSecret["password"],
+        host=dbSecret["host"],
+        dbname=dbSecret["dbname"]
+    )
+
+    cursor = connection.cursor()
+    print("Successfully connected to database")
+
+    # guidelines = [
+    #     "Online recordings of lectures can be accessed.",
+    #     "Questions can be posted anonymously.",
+    #     "Late assignments or deliverables are accepted.",
+    #     "Make-up midterms are offered.",
+    #     "The lowest assessment grades will not count towards your total grade.",
+    #     "Your top M out of N scores will count towards your final grade.",
+    #     "There are multiple attempts for assignments."
+    # ]
+
+    guideline_sql =  """
+    SELECT guideline FROM flexibility_guideline
+    """
 
     # Set the paths for the syllabus and destination
     syllabus_path = "syllabus_files/"
@@ -291,6 +362,31 @@ def main():
     )
 
     logger.info("Semantic report generation completed successfully.")
+
+    # ----------------------------
+
+    # QUESTION-ANSWERING
+
+    # Download the QA model weights file from S3
+    s3_client.download_file(TEMP_BUCKET_NAME, 'artifacts/qa_model_weights.pth', 'qa_model_weights.pth')
+    # Use a GPU if available, otherwise use CPU
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Load the tokenizer and model
+    tokenizer = AutoTokenizer.from_pretrained("roberta-base", cache_dir=transformer_cache_dir)
+    model = AutoModelForSequenceClassification.from_pretrained("roberta-base", cache_dir=transformer_cache_dir)
+    model.to(device)  # Move the model to the GPU if available
+    # Load the QA model weights
+    model.load_state_dict(torch.load('qa_model_weights.pth'))
+    model.eval()
+
+    logger.info("Starting QA report generation...")
+    generate_QA_results(tokenizer=tokenizer, model=model, device=device, destination_path=destination_path)
+    logger.info("QA report generation completed successfully.")
+
+    # ----------------------------
+
+    # Upload Semantic-Search result json files and QA results json files to S3
+    upload_files(directory=destination_path)
 
 if __name__ == "__main__":
     main()

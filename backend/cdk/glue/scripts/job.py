@@ -31,6 +31,7 @@ DLQ_QUEUE_NAME = args["DLQ_QUEUE_NAME"]
 DB_SECRET_NAME = args["DB_SECRET_NAME"]
 
 MAX_QUEUE_MESSAGES = 10
+current_date = datetime.date.today().strftime("%Y-%m-%d")  # 2023-05-30
 
 """
 This code create a temporary directory to download the artifacts for the nltk punkt tokenizer
@@ -72,7 +73,7 @@ class NotDeterminableException(Exception):
 
 
 # valid file extension currently supported
-valid_extensions = [".pdf", ".docx", ".html"]
+valid_extensions = [".pdf", ".docx"]
 
 # import course_campus_faculty_mapping.csv file into a pandas DataFrame
 courseMapping = pd.read_csv(fetchFromS3(
@@ -141,24 +142,24 @@ This function converts html to text
 """
 
 
-def load_text_from_html(path):
-    # Load the HTML content
-    url = r"file:///" + path
-    html = urlopen(url).read()
-    soup = BeautifulSoup(html, features="html.parser")
-    # Remove script and style elements from the HTML
-    for script in soup(["script", "style"]):
-        script.extract()
-    # Get the plain text from the HTML
-    text = soup.get_text()
-    # Split text into lines and remove leading/trailing spaces
-    lines = (line.strip() for line in text.splitlines())
-    # Split lines into chunks and remove extra spaces
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    # Join the chunks with newlines
-    html_text = '\n'.join(chunk for chunk in chunks if chunk)
-    filtered_sentences = preprocess_extracted_text(html_text)
-    return filtered_sentences
+# def load_text_from_html(path):
+#     # Load the HTML content
+#     url = r"file:///" + path
+#     html = urlopen(url).read()
+#     soup = BeautifulSoup(html, features="html.parser")
+#     # Remove script and style elements from the HTML
+#     for script in soup(["script", "style"]):
+#         script.extract()
+#     # Get the plain text from the HTML
+#     text = soup.get_text()
+#     # Split text into lines and remove leading/trailing spaces
+#     lines = (line.strip() for line in text.splitlines())
+#     # Split lines into chunks and remove extra spaces
+#     chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+#     # Join the chunks with newlines
+#     html_text = '\n'.join(chunk for chunk in chunks if chunk)
+#     filtered_sentences = preprocess_extracted_text(html_text)
+#     return filtered_sentences
 
 
 """
@@ -282,8 +283,8 @@ def extract_course_info_from_text(filePath, courseMappingSubset):
         corpus = " ".join(load_text_from_pdf(file))  # file
     elif ".docx" in filePath:
         corpus = " ".join(load_text_from_docx(file))  # file
-    elif ".html" in filePath:
-        corpus = " ".join(load_text_from_html(file))  # file
+    # elif ".html" in filePath:
+    #     corpus = " ".join(load_text_from_html(file))  # file
     # ensure that the corpus don't have consecutive spaces e.g "     "
     corpus = re.sub(r' +', ' ', corpus)
     result = scan_file_text(corpus, courseMappingSubset)
@@ -468,13 +469,20 @@ def retrieve_sqs_messages():
         else:
             delete_response = queue.delete_messages(Entries=messages_to_delete)
 
-    current_date = datetime.date.today().strftime("%Y-%m-%d")  # 2023-05-30
     putToS3(pd.DataFrame(metadata), TEMP_BUCKET_NAME,
             f"syllabus_metadata/metadata_{current_date}.csv")
 
 
 def main():
     retrieve_sqs_messages()
-
+     
+    # glue = boto3.client("glue")
+    # response = glue.start_job_run(
+    #     JobName=""
+    #     Arguments={
+    #         "TIMESTAMP": current_date,
+    #         "METADATA_FILEPATH": f"syllabus_metadata/metadata_{current_date}.csv"
+    #     }
+    # )
 
 main()
