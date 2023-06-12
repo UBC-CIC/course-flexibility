@@ -61,26 +61,55 @@ logger = logging.getLogger(__name__)
 
 # Accessing Glue job parameters as environment variables
 args = getResolvedOptions(
-    sys.argv, ["BUCKET_NAME", "TEMP_BUCKET_NAME", "DB_SECRET_NAME", "METADATA_FILEPATH", "TIMESTAMP"])
+    sys.argv, ["BUCKET_NAME", "TEMP_BUCKET_NAME", "DB_SECRET_NAME", "METADATA_FILEPATH", "TIMESTAMP", "INVOKE_MODE", "NEW_GUIDELINE"])
 BUCKET_NAME = args["BUCKET_NAME"]  # the syllabus files bucket
 TEMP_BUCKET_NAME = args["TEMP_BUCKET_NAME"]  # glue temp bucket
 DB_SECRET_NAME = args["DB_SECRET_NAME"]
 METADATA_FILEPATH = args["METADATA_FILEPATH"]
 TIMESTAMP = args["TIMESTAMP"]
+INVOKE_MODE = args["INVOKE_MODE"]
+NEW_GUIDELINE = args["NEW_GUIDELINE"]
 
 # ---------------------------------------------------------
 
+# Connect to the database
+def getDbSecret():
+    # secretsmanager client to get db credentials
+    sm_client = boto3.client("secretsmanager")
+    response = sm_client.get_secret_value(
+        SecretId=DB_SECRET_NAME)["SecretString"]
+    secret = json.loads(response)
+    return secret
+dbSecret = getDbSecret()
+connection = psycopg2.connect(
+        user=dbSecret["username"],
+        password=dbSecret["password"],
+        host=dbSecret["host"],
+        dbname=dbSecret["dbname"]
+    )
+
+cursor = connection.cursor()
+print("Successfully connected to the database")
+
 campuses_to_analyze = ["UBCV", "UBCO"]
 
-def download_files(bucket_name=BUCKET_NAME, download_dir='syllabus_files'):
+def download_files(invoke_mode, download_dir='syllabus_files'):
 
-    bucket_name = bucket_name
-    
-    metadata_file = fetchFromS3(TEMP_BUCKET_NAME, METADATA_FILEPATH)
+    # the file storage bucket
+    bucket_name = BUCKET_NAME
 
-    # Iterate over each path and download the file to the relevant directory
-    metadata_df = pd.read_csv(metadata_file)
-    s3_filepaths = list(metadata_df['s3_filepath'])
+    # file_upload INVOKE MODE
+    if invoke_mode == "file_upload":
+        metadata_file = fetchFromS3(TEMP_BUCKET_NAME, METADATA_FILEPATH)
+        # Iterate over each path and download the file to the relevant directory
+        metadata_df = pd.read_csv(metadata_file)
+        s3_filepaths = list(metadata_df['s3_filepath'])
+    # new_guideline INVOKE MODE
+    elif invoke_mode == "new_guideline":
+        # get all syllabus file currently stored in the database
+        cursor.execute("SELECT syllabus_id, s3_filepath FROM syllabus")
+        syllabi = cursor.fetchall()
+        s3_filepaths = [s[1] for s in syllabi]
 
     for s3_key in s3_filepaths:
         key_split = s3_key.split("/")
@@ -304,34 +333,12 @@ def generate_QA_results(tokenizer, model, device, destination_path=r'model_outpu
             with open(output_file_path, "w", encoding='utf-8') as file:
                 json.dump(existing_data, file, indent=4, ensure_ascii=False)
 
-
-def getDbSecret():
-    # secretsmanager client to get db credentials
-    sm_client = boto3.client("secretsmanager")
-    response = sm_client.get_secret_value(
-        SecretId=DB_SECRET_NAME)["SecretString"]
-    secret = json.loads(response)
-    return secret
-
 def main():
-
     # Entry point of the program
 
     # SEMANTIC-SIMILARITY (SEMANTIC-SEARCH)
 
     logger.info("Starting semantic report generation...")
-
-    dbSecret = getDbSecret()
-
-    connection = psycopg2.connect(
-        user=dbSecret["username"],
-        password=dbSecret["password"],
-        host=dbSecret["host"],
-        dbname=dbSecret["dbname"]
-    )
-
-    cursor = connection.cursor()
-    print("Successfully connected to database")
 
     # guidelines = [
     #     "Online recordings of lectures can be accessed.",
@@ -342,17 +349,23 @@ def main():
     #     "Your top M out of N scores will count towards your final grade.",
     #     "There are multiple attempts for assignments."
     # ]
+    if INVOKE_MODE == "file_upload":
+        print(f"INVOKE MODE: {INVOKE_MODE} - Invoked for new file uploads")
+        all_guideline_sql =  "SELECT guideline FROM flexibility_guideline;"
+        cursor.execute(all_guideline_sql)
+        res = cursor.fetchall() # fetch all guidelines currently in database
+        guidelines = [g[0] for g in res]
 
-    guideline_sql =  """
-    SELECT guideline FROM flexibility_guideline
-    """
+    elif INVOKE_MODE == "new_guideline":
+        print(f"INVOKE MODE: {INVOKE_MODE} - Invoked for new file uploads")
+        guidelines = [NEW_GUIDELINE]
 
     # Set the paths for the syllabus and destination
     syllabus_path = "syllabus_files/"
     destination_path = "model_outputs/"
     
     # Download files in the current metadata .csv
-    download_files()
+    download_files(INVOKE_MODE)
     
     # Generate the semantic reports
     generate_semantic_reports(
@@ -388,12 +401,33 @@ def main():
     # Upload Semantic-Search result json files and QA results json files to S3
     upload_files(directory=destination_path)
 
+    # clean up database cursor/connection
+    cursor.close()
+    connection.close()
+
+    if INVOKE_MODE == "file_upload":
+        response = glue_client.start_job_run(
+            JobName="courseFlexibility-storeData",
+            Arguments={
+                "--METADATA_FILEPATH": METADATA_FILEPATH,
+                "--SEMANTIC_FILEPATH": f"semantic_similarity_results_{TIMESTAMP}.json",
+                "--QA_FILEPATH": f"question_answering_results_{TIMESTAMP}.json",
+                "--TIMESTAMP": TIMESTAMP,
+                "--INVOKE_MODE": INVOKE_MODE
+            }
+        )
+    elif INVOKE_MODE == "new_guideline":
+        response = glue_client.start_job_run(
+            JobName="courseFlexibility-storeData",
+            Arguments={
+                "--SEMANTIC_FILEPATH": f"semantic_similarity_results_new_guideline_{TIMESTAMP}.json",
+                "--QA_FILEPATH": f"question_answering_results_new_guideline_{TIMESTAMP}.json",
+                "--TIMESTAMP": TIMESTAMP,
+                "--INVOKE_MODE": INVOKE_MODE
+            }
+        )
+    print(f"Started Job storeData with INVOKE MODE: {INVOKE_MODE}")
+
 if __name__ == "__main__":
     main()
-    # response = glue_client.start_job_run(
-    #     JobName="test-question-answering",
-    #     Arguments={
-            
-    #     }
-    # )
 

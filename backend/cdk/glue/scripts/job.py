@@ -469,20 +469,30 @@ def retrieve_sqs_messages():
         else:
             delete_response = queue.delete_messages(Entries=messages_to_delete)
 
+    # if no files upload -> no metadata extracted -> return False
+    if len(metadata) == 0:
+        return False
     putToS3(pd.DataFrame(metadata), TEMP_BUCKET_NAME,
             f"syllabus_metadata/metadata_{current_date}.csv")
+    return True
 
 
 def main():
-    retrieve_sqs_messages()
-     
-    # glue = boto3.client("glue")
-    # response = glue.start_job_run(
-    #     JobName=""
-    #     Arguments={
-    #         "TIMESTAMP": current_date,
-    #         "METADATA_FILEPATH": f"syllabus_metadata/metadata_{current_date}.csv"
-    #     }
-    # )
+    
+    run = retrieve_sqs_messages()
+    if run:
+    #     glue_client = boto3.client("glue")
+    #     response = glue_client.start_job_run(
+    #         JobName="courseFlexibility-generateAnalysisReport",
+    #         Arguments={
+    #             "--TIMESTAMP": current_date,
+    #             "--METADATA_FILEPATH": f"syllabus_metadata/metadata_{current_date}.csv",
+    #             "--INVOKE_MODE": "file_upload",
+    #             "--NEW_GUIDELINE": ""
+    #         }
+    #     )
+        print(f"Metadata was successfully processed. Job run {current_date}")
+    else:
+        print(f"No files to analyze for this invocation on {current_date}")
 
 main()
