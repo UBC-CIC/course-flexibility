@@ -420,8 +420,8 @@ def main():
         response = glue_client.start_job_run(
             JobName="courseFlexibility-storeData",
             Arguments={
-                "--SEMANTIC_FILEPATH": f"semantic_similarity_results_new_guideline_{TIMESTAMP}.json",
-                "--QA_FILEPATH": f"question_answering_results_new_guideline_{TIMESTAMP}.json",
+                "--SEMANTIC_FILEPATH": f"semantic_similarity_results_{TIMESTAMP}.json",
+                "--QA_FILEPATH": f"question_answering_results_{TIMESTAMP}.json",
                 "--TIMESTAMP": TIMESTAMP,
                 "--INVOKE_MODE": INVOKE_MODE
             }

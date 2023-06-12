@@ -406,6 +406,8 @@ def process_s3_event(s3event):
 """
 Programmatically receives SQS messages that contains S3 upload events, process them, then delete them
 from the Queue. Event that are deemed unprocessable will be dumped into a separate DLQ for manual inspection.
+
+@return true if there are event processed, false otherwise
 """
 
 
