@@ -407,7 +407,7 @@ def main():
 
     if INVOKE_MODE == "file_upload":
         response = glue_client.start_job_run(
-            JobName="courseFlexibility-storeData",
+            JobName="courseFlexibility-StoreData",
             Arguments={
                 "--METADATA_FILEPATH": METADATA_FILEPATH,
                 "--SEMANTIC_FILEPATH": f"semantic_similarity_results_{TIMESTAMP}.json",
@@ -418,8 +418,9 @@ def main():
         )
     elif INVOKE_MODE == "new_guideline":
         response = glue_client.start_job_run(
-            JobName="courseFlexibility-storeData",
+            JobName="courseFlexibility-StoreData",
             Arguments={
+                "--METADATA_FILEPATH": "n/a",
                 "--SEMANTIC_FILEPATH": f"semantic_similarity_results_{TIMESTAMP}.json",
                 "--QA_FILEPATH": f"question_answering_results_{TIMESTAMP}.json",
                 "--TIMESTAMP": TIMESTAMP,

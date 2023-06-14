@@ -45,6 +45,21 @@ export class DataWorkflowStack extends Stack {
       amplifyStorageBucketName
     );
 
+    // Glue deployment bucket
+    const glueS3Bucket = new s3.Bucket(
+      this,
+      "courseFlexibility-glue-s3bucket",
+      {
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        autoDeleteObjects: true,
+        versioned: false,
+        publicReadAccess: false,
+        blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+        encryption: s3.BucketEncryption.S3_MANAGED,
+        serverAccessLogsPrefix: "accessLog",
+      }
+    );
+
     // Dead-Letter Queue to store unprocessed event
     const DLQName = "courseFlexibility-DLQ";
     const DLQ = new sqs.Queue(this, DLQName, {
@@ -56,10 +71,12 @@ export class DataWorkflowStack extends Stack {
     // Main queue that will holds the bucket upload events
     const mainQueueName = "courseFlexibility-s3EventQueue";
     const s3EventQueue = new sqs.Queue(this, mainQueueName, {
-      queueName: "courseFlexibility-s3EventQueue",
-      visibilityTimeout: cdk.Duration.seconds(700),
+      queueName: mainQueueName,
+      visibilityTimeout: cdk.Duration.seconds(49),
+      retentionPeriod: cdk.Duration.days(14),
+      deliveryDelay: cdk.Duration.seconds(1),
       deadLetterQueue: {
-        maxReceiveCount: 2,
+        maxReceiveCount: 1,
         queue: DLQ,
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -67,24 +84,42 @@ export class DataWorkflowStack extends Stack {
 
     // configure ObjectCreatedNotification for S3 to send events to SQS
     amplifyStorageBucket.addObjectCreatedNotification(
-      new s3n.SqsDestination(s3EventQueue)
+      new s3n.SqsDestination(s3EventQueue),
+      {
+        prefix: "UBCV/",
+      }
+    ) 
+    amplifyStorageBucket.addObjectCreatedNotification(
+      new s3n.SqsDestination(s3EventQueue),
+      {
+        prefix: "UBCO/",
+      }
     );
 
-    const triggerLambda = new lambda.Function(
+    // The layer containing the psycopg2 library
+    const psycopg2 = new lambda.LayerVersion(this, "psycopg2", {
+      code: lambda.Code.fromAsset("layers/psycopg2.zip"),
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
+      description: "psycopg2 library for connecting to the PostgreSQL database",
+    });
+
+    const triggerLambda = new triggers.TriggerFunction(
       this,
       "courseFlexibility-triggerLambda",
       {
-        functionName: "courseFlexibility-triggerLambda",
+        functionName: "courseFlexibility-createFoldersAndDBTables",
         runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_handler",
         timeout: cdk.Duration.seconds(300),
         memorySize: 512,
         environment: {
+          BUCKET_NAME: amplifyStorageBucket.bucketName,
           DB_SECRET_NAME: databaseStack.secretPath,
         },
         vpc: vpcStack.vpc,
         code: lambda.Code.fromAsset("./lambda/triggerLambda"),
-        //layers: [],
+        layers: [psycopg2],
+        executeAfter: [amplifyStorageBucket],
       }
     );
 
@@ -92,28 +127,11 @@ export class DataWorkflowStack extends Stack {
       new iam.PolicyStatement({
         effect: Effect.ALLOW,
         actions: [
-          "glue:GetJob",
-          "glue:GetJobs",
-          "glue:GetJobRun",
-          "glue:GetJobRuns",
-          "glue:StartJobRun",
-          "glue:UpdateJob",
-        ],
-        resources: [
-          "*", // DO NOT CHANGE
-        ],
-      })
-    );
-
-    triggerLambda.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: [
-          "s3:ListBucketVersions",
           "s3:ListBucket",
           "s3:ListObjectsV2",
-          "s3:ListMultipartUploadParts",
-          "s3:ListObjectVersions",
+          "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:GetObject",
         ],
         resources: [
           `arn:aws:s3:::${amplifyStorageBucket.bucketName}`,
@@ -157,27 +175,16 @@ export class DataWorkflowStack extends Stack {
     const glueSSMPolicy = iam.ManagedPolicy.fromAwsManagedPolicyName(
       "AmazonSSMFullAccess"
     );
+    const glueSQSPolicy = iam.ManagedPolicy.fromAwsManagedPolicyName(
+      "AmazonSQSFullAccess"
+    );
 
     glueRole.addManagedPolicy(glueServiceRolePolicy);
     glueRole.addManagedPolicy(glueConsoleFullAccessPolicy);
     glueRole.addManagedPolicy(glueSecretManagerPolicy);
     glueRole.addManagedPolicy(glueAmazonS3FullAccessPolicy);
     glueRole.addManagedPolicy(glueSSMPolicy);
-
-    // Glue deployment bucket
-    const glueS3Bucket = new s3.Bucket(
-      this,
-      "courseFlexibility-glue-s3bucket",
-      {
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-        autoDeleteObjects: true,
-        versioned: false,
-        publicReadAccess: false,
-        blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-        encryption: s3.BucketEncryption.S3_MANAGED,
-        serverAccessLogsPrefix: "accessLog",
-      }
-    );
+    glueRole.addManagedPolicy(glueSQSPolicy);
 
     // Create a Self-referencing security group for Glue
     // https://docs.aws.amazon.com/glue/latest/dg/setup-vpc-for-glue-access.html
@@ -224,22 +231,17 @@ export class DataWorkflowStack extends Stack {
     const MAX_CAPACITY = 1; // 1/16 of a DPU, lowest setting
     const MAX_CONCURRENT_RUNS = 7; // 7 concurrent runs of the same job simultaneously
     const TIMEOUT = 170; // 170 min timeout duration
-    const defaultArguments = {
-      //"--extra-py-files": "",
-      "library-set": "analytics",
-      "--DB_SECRET_NAME": databaseStack.secretPath,
-    };
 
-    // Glue Job: fetch EPO patent data from OPS API
-    const glueJobName = "courseFlexibility-Job";
-    const glueJob = new glue.CfnJob(this, glueJobName, {
-      name: glueJobName,
+    // Glue Job: extract syllabus metadata
+    const glueJob1Name = "courseFlexibility-ExtractMetadata";
+    const glueJob1 = new glue.CfnJob(this, glueJob1Name, {
+      name: glueJob1Name,
       role: glueRole.roleArn,
       command: {
         name: "pythonshell",
         pythonVersion: PYTHON_VER,
         scriptLocation:
-          "s3://" + glueS3Bucket.bucketName + "/scripts/job.py",
+          "s3://" + glueS3Bucket.bucketName + "/scripts/extract_metadata.py",
       },
       executionProperty: {
         maxConcurrentRuns: MAX_CONCURRENT_RUNS,
@@ -249,13 +251,106 @@ export class DataWorkflowStack extends Stack {
       },
       maxRetries: MAX_RETRIES,
       maxCapacity: MAX_CAPACITY,
-      timeout: TIMEOUT, // 120 min timeout duration
+      timeout: TIMEOUT,
       glueVersion: GLUE_VER,
-      defaultArguments: defaultArguments,
+      defaultArguments: {
+        "--extra-py-files": `s3://${glueS3Bucket.bucketName}/custom_modules/utils.py,s3://${glueS3Bucket.bucketName}/custom_modules/custom_utils-0.1-py3-none-any.whl`,
+        "--additional-python-modules": "nltk,PyPDF2,python-docx,beautifulsoup4",
+        "library-set": "analytics",
+        "--BUCKET_NAME": amplifyStorageBucket.bucketName,
+        "--TEMP_BUCKET_NAME": glueS3Bucket.bucketName,
+        "--QUEUE_NAME": mainQueueName,
+        "--DLQ_QUEUE_NAME": DLQName,
+        "--DB_SECRET_NAME": databaseStack.secretPath,
+      },
+    });
+
+    // Glue Job: generate NLP analysis on the syllabus files
+    const glueJob2Name = "courseFlexibility-GenerateNLPAnalysis";
+    const glueJob2 = new glue.CfnJob(this, glueJob2Name, {
+      name: glueJob2Name,
+      role: glueRole.roleArn,
+      command: {
+        name: "pythonshell",
+        pythonVersion: PYTHON_VER,
+        scriptLocation:
+          "s3://" +
+          glueS3Bucket.bucketName +
+          "/scripts/generate_nlp_analysis.py",
+      },
+      executionProperty: {
+        maxConcurrentRuns: MAX_CONCURRENT_RUNS,
+      },
+      connections: {
+        connections: [glueVpcConnectionName], // a Glue NETWORK connection allows you to access any resources inside and outside (the internet) of that VPC
+      },
+      maxRetries: MAX_RETRIES,
+      maxCapacity: MAX_CAPACITY,
+      timeout: TIMEOUT,
+      glueVersion: GLUE_VER,
+      defaultArguments: {
+        "--extra-py-files": `s3://${glueS3Bucket.bucketName}/custom_modules/utils.py,s3://${glueS3Bucket.bucketName}/custom_modules/custom_utils-0.1-py3-none-any.whl`,
+        "--additional-python-modules": `beautifulsoup4==4.12.2,boto3==1.26.114,python-docx==0.8.11,nltk==3.8.1,numpy==1.24.2,pandas==2.0.0,
+          PyPDF2==3.0.1,sentence_transformers==2.2.2,torch==2.0.1,tqdm==4.65.0,transformers==4.29.2,psycopg2-binary`,
+        "library-set": "analytics",
+        "--BUCKET_NAME": amplifyStorageBucket.bucketName,
+        "--TEMP_BUCKET_NAME": glueS3Bucket.bucketName,
+        "--DB_SECRET_NAME": databaseStack.secretPath,
+        "--INVOKE_MODE": "file_upload",
+        "--METADATA_FILEPATH": "n/a",
+        "--NEW_GUIDELINE": "n/a"
+      },
+    });
+
+    // Glue Job: store the data in the database
+    const glueJob3Name = "courseFlexibility-StoreData";
+    const glueJob3 = new glue.CfnJob(this, glueJob3Name, {
+      name: glueJob3Name,
+      role: glueRole.roleArn,
+      command: {
+        name: "pythonshell",
+        pythonVersion: PYTHON_VER,
+        scriptLocation:
+          "s3://" + glueS3Bucket.bucketName + "/scripts/store_data.py",
+      },
+      executionProperty: {
+        maxConcurrentRuns: MAX_CONCURRENT_RUNS,
+      },
+      connections: {
+        connections: [glueVpcConnectionName], // a Glue NETWORK connection allows you to access any resources inside and outside (the internet) of that VPC
+      },
+      maxRetries: MAX_RETRIES,
+      maxCapacity: MAX_CAPACITY,
+      timeout: TIMEOUT,
+      glueVersion: GLUE_VER,
+      defaultArguments: {
+        "--extra-py-files": `s3://${glueS3Bucket.bucketName}/custom_modules/utils.py,s3://${glueS3Bucket.bucketName}/custom_modules/custom_utils-0.1-py3-none-any.whl`,
+        "--additional-python-modules": "psycopg2-binary",
+        "library-set": "analytics",
+        "--BUCKET_NAME": amplifyStorageBucket.bucketName,
+        "--TEMP_BUCKET_NAME": glueS3Bucket.bucketName,
+        "--DB_SECRET_NAME": databaseStack.secretPath,
+        "--INVOKE_MODE": "file_upload",
+        "--METADATA_FILEPATH": "n/a",
+      },
     });
 
     // Deploy glue job to glue S3 bucket
-    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles", {
+    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles1", {
+      sources: [s3deploy.Source.asset("./glue/artifacts")],
+      destinationBucket: glueS3Bucket,
+      destinationKeyPrefix: "artifacts",
+    });
+
+    // Deploy glue job to glue S3 bucket
+    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles2", {
+      sources: [s3deploy.Source.asset("./glue/custom_modules")],
+      destinationBucket: glueS3Bucket,
+      destinationKeyPrefix: "custom_modules",
+    });
+
+    // Deploy glue job to glue S3 bucket
+    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles3", {
       sources: [s3deploy.Source.asset("./glue/scripts")],
       destinationBucket: glueS3Bucket,
       destinationKeyPrefix: "scripts",
@@ -265,7 +360,9 @@ export class DataWorkflowStack extends Stack {
     glueS3Bucket.grantReadWrite(glueRole);
 
     // Destroy Glue related resources when PatentDataStack is deleted
-    glueJob.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    glueJob1.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    glueJob2.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    glueJob3.applyRemovalPolicy(RemovalPolicy.DESTROY);
     glueRole.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
 }

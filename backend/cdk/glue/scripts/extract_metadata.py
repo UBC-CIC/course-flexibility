@@ -483,16 +483,16 @@ def main():
     
     run = retrieve_sqs_messages()
     if run:
-    #     glue_client = boto3.client("glue")
-    #     response = glue_client.start_job_run(
-    #         JobName="courseFlexibility-generateAnalysisReport",
-    #         Arguments={
-    #             "--TIMESTAMP": current_date,
-    #             "--METADATA_FILEPATH": f"syllabus_metadata/metadata_{current_date}.csv",
-    #             "--INVOKE_MODE": "file_upload",
-    #             "--NEW_GUIDELINE": ""
-    #         }
-    #     )
+        glue_client = boto3.client("glue")
+        response = glue_client.start_job_run(
+            JobName="courseFlexibility-GenerateNLPAnalysis",
+            Arguments={
+                "--TIMESTAMP": current_date,
+                "--METADATA_FILEPATH": f"syllabus_metadata/metadata_{current_date}.csv",
+                "--INVOKE_MODE": "file_upload",
+                "--NEW_GUIDELINE": "n/a"
+            }
+        )
         print(f"Metadata was successfully processed. Job run {current_date}")
     else:
         print(f"No files to analyze for this invocation on {current_date}")

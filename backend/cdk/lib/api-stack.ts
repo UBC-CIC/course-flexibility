@@ -97,11 +97,11 @@ export class ApiStack extends Stack {
       })
     );
 
-    // The layer containing the psycopg2 library
-    const psycopg2 = new lambda.LayerVersion(this, "psycopg2", {
-      code: lambda.Code.fromAsset("layers/psycopg2.zip"),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
-      description: "Contains the psycopg2 library",
+    // The layer containing the postgres library
+    const postgres = new lambda.LayerVersion(this, 'postgres', {
+      code: lambda.Code.fromAsset('./layers/postgres.zip'),
+      compatibleRuntimes: [lambda.Runtime.NODEJS_16_X],
+      description: 'Contains the postgres library',
     });
 
     // Create the postgresql db query function.
@@ -110,7 +110,7 @@ export class ApiStack extends Stack {
       "courseFlexibility-gqlResolverLambda",
       {
         functionName: "courseFlexibility-gqlResolverLambda",
-        runtime: lambda.Runtime.PYTHON_3_9,
+        runtime: lambda.Runtime.NODEJS_16_X,
         handler: "lambda_handler",
         timeout: cdk.Duration.seconds(300),
         role: lambdaRole,
@@ -120,7 +120,7 @@ export class ApiStack extends Stack {
         },
         vpc: vpcStack.vpc,
         code: lambda.Code.fromAsset("./lambda/gqlResolverLambda"),
-        layers: [psycopg2],
+        layers: [postgres],
       }
     );
 
@@ -150,7 +150,7 @@ export class ApiStack extends Stack {
 
     // Create Lambda Data Source for PostgreSQL GraphQL queries
     // It is essentially a lambda function that will resolve the query that is passed to it by the GraphQL API
-    const lambdaDataSource = new appsync.CfnDataSource(
+    const postgresLambdaDataSource = new appsync.CfnDataSource(
       this,
       "courseFlexibility-queriesLambdaDataSource",
       {
@@ -168,42 +168,58 @@ export class ApiStack extends Stack {
     const apiSchema = new appsync.CfnGraphQLSchema(this, "GraphQLSchema", {
       apiId: APIID,
       definition: `
-      type Course {
-        name: String!
-        number: String!
+      type Mutation {
+        addGuideline(guideline: String!, guidelineCode: String!): Object
+        removeGuideline(guidelineID: String!): Object
+        startJobRun(guideline: String!): Object
+        loadSQL(sql: String!): Object
+      }
+      
+      type Object {
+        statusCode: Int!
+        result: String!
       }
       
       type Query {
-        getAllCoursesData: [Course]
-      }
-
-      type Mutation {
-        startAnalysis: String
+        getTodo: Object!
+        getAllGuidelines: Object!
+        getAllSyllabusMetadata(offset: Int!): Object!
+        getSyllabusAnalysis(syllabusID: String!): Object!
+        getFacultyResult: Object!
+        getCampusResult: Object!
+        getFacultyList: Object!
       }
       `,
     });
 
     // Create all the unit resolvers for GraphQL type Query and Mutation
-    let queriesList = ["getAllCoursesData"];
+    let queriesList = [
+      "getTodo", "getAllGuidelines", "getAllSyllabusMetadata", "getSyllabusAnalysis", "getFacultyResult",
+      "getCampusResult", "getFacultyList"
+    ];
 
-    for (var i = 0; i < queriesList.length; i++) {
+    for (let i = 0; i < queriesList.length; i++) {
       const query_resolver = new appsync.CfnResolver(this, queriesList[i], {
         apiId: APIID,
         fieldName: queriesList[i],
         typeName: "Query",
-        dataSourceName: lambdaDataSource.name,
+        dataSourceName: postgresLambdaDataSource.name,
       });
+      query_resolver.addDependency(postgresLambdaDataSource);
+      query_resolver.addDependency(apiSchema);
     }
 
-    let mutationsList = ["startAnalysis"];
+    let mutationsList = ["addGuideline", "removeGuideline", "startJobRun", "loadSQL"];
 
-    for (var i = 0; i < mutationsList.length; i++) {
-      const mutations_resolver = new appsync.CfnResolver(this, mutationsList[i], {
+    for (let i = 0; i < mutationsList.length; i++) {
+      const mutation_resolver = new appsync.CfnResolver(this, mutationsList[i], {
         apiId: APIID,
         fieldName: mutationsList[i],
         typeName: "Mutation",
-        dataSourceName: lambdaDataSource.name,
+        dataSourceName: postgresLambdaDataSource.name,
       });
+      mutation_resolver.addDependency(postgresLambdaDataSource);
+      mutation_resolver.addDependency(apiSchema);
     }
 
     // Waf Firewall

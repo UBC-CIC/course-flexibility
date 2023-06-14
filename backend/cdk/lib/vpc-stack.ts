@@ -77,16 +77,16 @@ export class VpcStack extends Stack {
       subnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
     });
 
-    // Sagemaker Endpoints for VPC
-    this.vpc.addInterfaceEndpoint("Sagemaker-API-Endpoint", {
-      service: ec2.InterfaceVpcEndpointAwsService.SAGEMAKER_API,
-      subnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
-    });
+    // // Sagemaker Endpoints for VPC
+    // this.vpc.addInterfaceEndpoint("Sagemaker-API-Endpoint", {
+    //   service: ec2.InterfaceVpcEndpointAwsService.SAGEMAKER_API,
+    //   subnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+    // });
 
-    this.vpc.addInterfaceEndpoint("Sagemaker-Runtime-Endpoint", {
-      service: ec2.InterfaceVpcEndpointAwsService.SAGEMAKER_RUNTIME,
-      subnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
-    });
+    // this.vpc.addInterfaceEndpoint("Sagemaker-Runtime-Endpoint", {
+    //   service: ec2.InterfaceVpcEndpointAwsService.SAGEMAKER_RUNTIME,
+    //   subnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+    // });
 
     this.vpc.isolatedSubnets.forEach(
       ({ routeTable: { routeTableId } }, index) => {
