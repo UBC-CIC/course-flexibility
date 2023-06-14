@@ -410,8 +410,8 @@ def main():
             JobName="courseFlexibility-StoreData",
             Arguments={
                 "--METADATA_FILEPATH": METADATA_FILEPATH,
-                "--SEMANTIC_FILEPATH": f"semantic_similarity_results_{TIMESTAMP}.json",
-                "--QA_FILEPATH": f"question_answering_results_{TIMESTAMP}.json",
+                "--SEMANTIC_FILEPATH": f"model_outputs/semantic_similarity_results_{TIMESTAMP}.json",
+                "--QA_FILEPATH": f"model_outputs/question_answering_results_{TIMESTAMP}.json",
                 "--TIMESTAMP": TIMESTAMP,
                 "--INVOKE_MODE": INVOKE_MODE
             }
@@ -421,8 +421,8 @@ def main():
             JobName="courseFlexibility-StoreData",
             Arguments={
                 "--METADATA_FILEPATH": "n/a",
-                "--SEMANTIC_FILEPATH": f"semantic_similarity_results_{TIMESTAMP}.json",
-                "--QA_FILEPATH": f"question_answering_results_{TIMESTAMP}.json",
+                "--SEMANTIC_FILEPATH": f"model_outputs/semantic_similarity_results_{TIMESTAMP}.json",
+                "--QA_FILEPATH": f"model_outputs/question_answering_results_{TIMESTAMP}.json",
                 "--TIMESTAMP": TIMESTAMP,
                 "--INVOKE_MODE": INVOKE_MODE
             }
