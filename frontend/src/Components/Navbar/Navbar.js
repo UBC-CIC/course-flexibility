@@ -195,7 +195,7 @@ function Navbar(props) {
             <AppBar position="static">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" component={"h1"} noWrap>
-                        <span><span>Syllabus</span><span style={{color: `${theme.palette.secondary.main}`}}>/</span><span>Flexibility Dashboard</span></span>
+                        <span><span>UBC</span><span style={{color: `${theme.palette.secondary.main}`}}>/</span><span>Flexibility Dashboard</span></span>
                     </Typography>
                     {/* <img className={classes.logo} style={{width: "270px", height: "30px"}} src={process.env.PUBLIC_URL + './Assets/Images/logo_inverse.png'} alt="..."/> */}
                     <div className={classes.grow} />
