@@ -50,5 +50,5 @@ amplifytools.xcconfig
 **.sample
 #amplify-do-not-edit-end
 
-amplify/team-provider-info.json
-back_end/cdk/cdk.context.json
+#amplify/team-provider-info.json
+#back_end/cdk/cdk.context.json
