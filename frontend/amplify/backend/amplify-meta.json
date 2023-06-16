@@ -38,7 +38,7 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync",
-      "lastPushTimeStamp": "2023-06-14T23:00:26.863Z",
+      "lastPushTimeStamp": "2023-06-16T00:55:09.592Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-courseflexibility-dev-152354-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apicourseflexibility"
@@ -80,7 +80,7 @@
         "IdentityPoolName": "courseflexibilityd81a2987_identitypool_d81a2987__dev",
         "UserPoolName": "courseflexibilityd81a2987_userpool_d81a2987"
       },
-      "lastPushTimeStamp": "2023-06-14T23:00:26.865Z",
+      "lastPushTimeStamp": "2023-06-16T00:55:09.594Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-courseflexibility-dev-152354-deployment/amplify-cfn-templates/auth/courseflexibilityd81a2987-cloudformation-template.json",
         "logicalId": "authcourseflexibilityd81a2987"
@@ -89,8 +89,6 @@
   },
   "custom": {
     "customResource5463b583": {
-      "service": "customCDK",
-      "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "api",
@@ -109,13 +107,14 @@
           ]
         }
       ],
+      "providerPlugin": "awscloudformation",
+      "service": "customCDK",
+      "output": {},
+      "lastPushTimeStamp": "2023-06-16T00:55:09.595Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-courseflexibility-dev-152354-deployment/amplify-cfn-templates/custom/customResource5463b583-cloudformation-template.json",
         "logicalId": "customcustomResource5463b583"
-      },
-      "lastPushTimeStamp": "2023-06-14T23:00:26.866Z",
-      "output": {},
-      "lastPushDirHash": "K8ic9Js7LBzTEEFreu/VoRe/b0I="
+      }
     }
   },
   "storage": {
@@ -127,7 +126,7 @@
         "BucketName": "courseflexibilitystorage152354-dev",
         "Region": "ca-central-1"
       },
-      "lastPushTimeStamp": "2023-06-14T23:00:35.658Z",
+      "lastPushTimeStamp": "2023-06-16T00:55:20.785Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-courseflexibility-dev-152354-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
         "logicalId": "storagecourseFlexibilityStorage"
