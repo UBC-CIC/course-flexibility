@@ -82,8 +82,6 @@ class CourseTable extends Component {
             this.setState({loadTable: false});
             const query = await API.graphql({ query: getAllSyllabusMetadata, variables: { offset: offset } });
             const syllabi =  JSON.parse(query.data.getAllSyllabusMetadata.result);
-            // console.log("syllabi: ", syllabi[0]);
-            console.log("query: ", query);
 
             this.rows.push(...syllabi);
             
@@ -107,9 +105,6 @@ class CourseTable extends Component {
     handlerAnalysisMoreInfo = (param, event) =>{
         // console.log("param: ",  param, "event: ", event)
         const indexFound = this.rows.findIndex(e => e.id === param);
-
-        console.log("Output: ", this.rows[indexFound]);
-
         window.open(
             '/result?row='+ JSON.stringify(this.rows[indexFound]),
             '_blank'
@@ -129,6 +124,8 @@ class CourseTable extends Component {
 
     loadMoreEntry = () => {
         this.fetchCourseInfo(this.rows.length);
+
+        this.setState({snackbarOn: true, snackbarMsg: "There are still more data to load." })
     }
 
     FGAnalysis = (glList) => {
@@ -202,8 +199,6 @@ class CourseTable extends Component {
         
         /** Fetching all the course **/
         await this.fetchCourseInfo(0);
-
-        console.log("this.rows: ", this.rows);
 
         this.setState({loadTable: true});
     }
