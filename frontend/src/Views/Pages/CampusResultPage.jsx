@@ -5,9 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import Error404 from '../../Components/error404';
 
 // Import the styles
-import FacultyAnalysisInfo from '../../Components/FacultyAnalysisInfo';
+import CampusAnalysisInfo from '../../Components/CampusAnalysisInfo';
 
-class FacultyResultPage extends Component {
+class CampusResultPage extends Component {
     /** Page Render Info **/
     page = {
         title: "Analysis Result",
@@ -73,24 +73,20 @@ class FacultyResultPage extends Component {
                         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }} xs={10} sm={10} md={10} lg={8} sx={style.paper}>
                             <Grid xs={1} sm={1} md={1} lg={1}/>
                             <Grid xs = {10} sm={10} md={10} lg={10} sx={style.gridFlex}>
-                                <Typography variant={"h4"}><span style={{fontWeight: 'bold'}}> {row.faculty} {this.page.title}</span></Typography>
+                                <Typography variant={"h4"}><span style={{fontWeight: 'bold'}}> {row.campus} {this.page.title}</span></Typography>
                                 <Typography variant={"subtitle1"} noWrap>{this.page.description}</Typography>
                             </Grid>
                             <Grid xs={1} sm={1} md={1}lg={1}/>
 
                             {/* View Analysis Data */}
                             <Grid xs = {12} sm={12} md={12} lg={12}>
-                                <FacultyAnalysisInfo data={row}/>
+                                <CampusAnalysisInfo data={row}/>
                             </Grid>
 
                             <Grid xs = {12} sm={12} md={6} lg={6}>
                                 <div style={style.box}>
-                                    <Typography variant={"h6"} style={{paddingBottom: 10}}><span style={{fontWeight: 'bold'}}> Faculty Info </span></Typography>
+                                    <Typography variant={"h6"} style={{paddingBottom: 10}}><span style={{fontWeight: 'bold'}}> Campus Info </span></Typography>
                                     <div style={{paddingLeft: 15}}>
-                                    <Typography variant={"body1"}>
-                                            <span style={{fontWeight: 'bold'}}> Faculty: </span>
-                                            {row.faculty}
-                                        </Typography>
                                         <Typography variant={"body1"}>
                                             <span style={{fontWeight: 'bold'}}> Campus: </span>
                                             {row.campus}
@@ -116,13 +112,13 @@ class FacultyResultPage extends Component {
 
                             <Grid xs = {12} sm={12} md={6} lg={6}>
                                 <div style={style.box}>
-                                    <Typography variant={"h6"} style={{paddingBottom: 10}}><span style={{fontWeight: 'bold'}}> Course List </span></Typography>
+                                    <Typography variant={"h6"} style={{paddingBottom: 10}}><span style={{fontWeight: 'bold'}}> Faculty List </span></Typography>
                                     <div style={{paddingLeft: 15}}>
-                                        <Typography variant={"body1"}> 
-                                            {row.courses.map((fac, index) => (
-                                                <span>{fac}{(index === row.courses.length -1) ? ".":", "}</span>
+                                        <ul>
+                                            {row.faculties.map((fac) => (
+                                                <li><Typography variant={"body1"}> {fac} </Typography></li>
                                             ))}
-                                        </Typography>
+                                        </ul>
                                     </div>
                                 </div>
                             </Grid>
@@ -142,4 +138,4 @@ class FacultyResultPage extends Component {
     }
 }
  
-export default FacultyResultPage;
+export default CampusResultPage;

@@ -27,6 +27,7 @@ import SettingsPage from '../Pages/SettingPage';
 import AnalysisResultPage from '../Pages/AnalysisResultPage';
 import FacultyResultPage from '../Pages/FacultyResultPage';
 import Error404 from '../../Components/error404';
+import CampusResultPage from '../Pages/CampusResultPage';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -116,6 +117,7 @@ function PageContainer(props) {
                 <Route exact path={'/login'} component={LoginPage} />
                 <Route exact path={'/result'} component={AnalysisResultPage} />
                 <Route exact path={'/faculty'} component={FacultyResultPage} />
+                <Route exact path={'/campus'} component={CampusResultPage} />
                 <Route exact path="*" component={Error404} />
             </Switch>
 

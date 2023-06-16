@@ -5,26 +5,28 @@ import Chart from 'react-apexcharts'
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { API } from "aws-amplify";
-import {getGuidelineCountFaculty} from "../graphql/queries";
+import {getGuidelineCountCampus} from "../graphql/queries";
+
 const crypto = require('crypto');
 
-class FacultyAnalysisInfo extends Component {
+
+class CampusAnalysisInfo extends Component {
 
     /** DB Interaction **/
-    fetchFacultyGuidelinesCount = async (faculty) => {
+    fetchFacultyGuidelinesCount = async (campus) => {
         try{
-            const query = await API.graphql({ query: getGuidelineCountFaculty, variables: { faculty: faculty} });
-            const fac =  JSON.parse(query.data.getGuidelineCountFaculty.result);
+            const query = await API.graphql({ query: getGuidelineCountCampus, variables: { campus: campus} });
+            const cam =  JSON.parse(query.data.getGuidelineCountCampus.result);
 
-            console.log("face: ", fac);
+            console.log("face: ", cam);
 
             let color = [];
-            for(var i in fac.arrayGuideline){
-              const gl = fac.arrayGuideline[i];
+            for(var i in cam.arrayGuideline){
+              const gl = cam.arrayGuideline[i];
               color.push(this.stringToHexColor(gl));
             }
             
-            this.setState({categoriesYear: fac.arrayYear, guideline: fac.arrayGuideline, guideline_data: fac.arrayCount, colors: color});
+            this.setState({categoriesYear: cam.arrayYear, guideline: cam.arrayGuideline, guideline_data: cam.arrayCount, colors: color});
         } catch (err){
             console.log(err);
         }
@@ -64,6 +66,7 @@ class FacultyAnalysisInfo extends Component {
         guideline_data: [],
         loadTable: false
     } 
+    
     // Convert string into hex for coloring
     stringToHexColor = (str) => {
       const hash = crypto.createHash('sha1').update(str).digest('hex');
@@ -74,9 +77,11 @@ class FacultyAnalysisInfo extends Component {
     componentDidMount = async() => {
         console.log("dataParam: ", this.dataParam);
         /** Fetching all the course **/
-        await this.fetchFacultyGuidelinesCount(this.dataParam.faculty);
+        await this.fetchFacultyGuidelinesCount(this.dataParam.campus);
 
         console.log("this.state: ", this.state);
+
+        console.log("stringToHexColor: ", this.stringToHexColor("MULT"));
 
         this.setState({loadTable: true});
     }
@@ -142,6 +147,7 @@ class FacultyAnalysisInfo extends Component {
             {this.state.loadTable &&
             <Grid xs={12}>
                 <div style={this.style.box}>
+                <Typography variant={"h6"}><span style={{fontWeight: 'bold'}}> Campus Data </span></Typography>
                 <Chart
                     type="line"
                     width={'100%'}
@@ -157,4 +163,4 @@ class FacultyAnalysisInfo extends Component {
 
 }
 
-export default FacultyAnalysisInfo;
+export default CampusAnalysisInfo;

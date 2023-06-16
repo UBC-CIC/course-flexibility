@@ -75,7 +75,7 @@ class CampusTable extends Component {
         console.log("Output: ", this.rows[Number(param)]);
 
         window.open(
-            '/result?row='+ JSON.stringify(this.rows[Number(param)]),
+            '/campus?row='+ JSON.stringify(this.rows[Number(param)]),
             '_blank'
           );
     }
