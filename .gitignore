@@ -25,7 +25,7 @@ yarn-error.log*
 
 #other
 .eslintcache
-package-lock.json
+# package-lock.json
 .vscode/
 
 #amplify-do-not-edit-begin
