@@ -58,7 +58,7 @@ function App(props) {
                             * */
                             <Login logo={"custom"} type={"image"} themeColor={"standard"} animateTitle={true}
                                    title={"Welcome to Syllabus App"} darkMode={true}
-                                   disableSignUp={false}
+                                   disableSignUp={true}
                             />
                         )
                     }
