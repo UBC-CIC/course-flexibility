@@ -4,40 +4,63 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Select from '@mui/material/Select';
 import { FormControl, MenuItem, InputLabel, TextField, 
-    Grid, ListItemIcon, ListItemText, Checkbox, Button, Slider} from '@mui/material';
+    Grid, ListItemIcon, ListItemText, Checkbox, Button, OutlinedInput, Slider} from '@mui/material';
     
 import { API } from "aws-amplify";
-import {getFacultyList} from "../graphql/queries";
+import {getFacultyList, getAllGuidelines} from "../graphql/queries";
 
 function AdvancedFilters({flexibilityGuidelineRanges, handleFlexibilityGuidelineChange, flexibilityGuidelines}){
     const results = ["Yes", "Maybe", "No"];
 
     return(
-        <Grid  paddingLeft={3}>
-            <center>
-                <Typography variant={"h6"} paddingTop={3} paddingBottom={2}>Select Results for Flexibility Guidelines</Typography>
-            </center>
+        // <Grid  paddingLeft={3}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
             
-            {flexibilityGuidelines.map((flexibilityGuideline, index) => (
-                <Grid>
-                    <Typography variant={"subtitle1 "} paddingTop={3} paddingBottom={2}>{flexibilityGuideline}</Typography>
-                    <FormControl fullwidth size="small">
-                        <InputLabel paddingTop={5}>{flexibilityGuideline}</InputLabel>
-                        <Select
-                            value={flexibilityGuidelineRanges[index]}
-                            onChange={(event) => handleFlexibilityGuidelineChange(event, index)}
-                            align = 'left' 
-                            style={{ width: '100px' }} 
-                            size='small' 
-                            label="Result">
-                            <MenuItem value={'All'}>All</MenuItem>
-                            {results.map((result) => (
-                                <MenuItem value={result}>{result}</MenuItem>
-                                ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-            ))}   
+            <Grid xs={1} sm={1} md={1} lg={1}/>
+            <Grid xs = {10} sm={10} md={10} lg={10}>
+                <center>
+                <Typography variant={"h6"} paddingTop={3} paddingBottom={2}>Select Results for Flexibility Guidelines</Typography>
+                </center>
+            </Grid>
+            <Grid xs={1} sm={1} md={1}lg={1}/>
+
+            <Grid xs={1} sm={1} md={1} lg={1}/>
+            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }} xs = {10} sm={10} md={10} lg={10}>
+                {flexibilityGuidelines.map((flexibilityGuideline, index) => (
+                    <React.Fragment>
+                        <Grid xs = {12} sm={12} md={6} lg={6} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}>
+                            <Typography variant={"subtitle1 "} paddingTop={3} paddingBottom={2}>{flexibilityGuideline}</Typography>
+                        </Grid>
+
+                        <Grid xs = {12} sm={12} md={6} lg={6} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}>
+                        <FormControl variant="standard" fullWidth >
+                            <InputLabel paddingTop={5}>{flexibilityGuideline}</InputLabel>
+                            <Select
+                                value={flexibilityGuidelineRanges[index]}
+                                onChange={(event) => handleFlexibilityGuidelineChange(event, index)}
+                                align = 'left' 
+                                size='small' 
+                                label="Result">
+
+                                <MenuItem value={'All'} key={'All'}>All</MenuItem>
+                                {results.map((result) => (
+                                    <MenuItem value={result} key={result}>{result}</MenuItem>
+                                    ))}
+                            </Select>
+                        </FormControl>
+                        </Grid>
+                    </React.Fragment>
+                ))}
+            </Grid>
+            <Grid xs={1} sm={1} md={1}lg={1}/>
+
+            
         </Grid>     
     );
 }
@@ -74,6 +97,7 @@ export default function SearchFilters({courseNumber, handleCourseNumberChange,
             console.log(err);
         }
     }
+
 
     useEffect(() => {
         fetchFacultyList();

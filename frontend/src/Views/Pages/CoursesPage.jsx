@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid } from '@mui/material';
 import CourseTable from '../../Components/courseTable';
 import SearchFilters from '../../Components/SearchFilters';
+
+import { API } from "aws-amplify";
+import {getFacultyList, getAllGuidelines} from "../../graphql/queries";
 
 function CoursePage(){
     const MAX_YES = 0.7;
@@ -12,20 +15,73 @@ function CoursePage(){
     'Faculty of Education', 'Faculty of Applied Science'];
 
     /* Array of flexibility guidelines */
-    const flexibilityGuidelines = ['FG1: Online recordings of lectures can be accessed', 
-                                    'FG2: Questions can be posted anonymously', 
-                                    'FG3: Late assignments or deliverables are not accepted',
-                                     'FG4: Make-up midterms are offered', 
-                                     'FG5: The lowest assessment grades will not count towards your total grade', 
-                                     'FG6: Your top M out of N scores will count towards your final grade',
-                                    'FG7: There are multiple attempts for assignments'];
+    // const flexibilityGuidelines = ['FG1: Online recordings of lectures can be accessed', 
+    //                                 'FG2: Questions can be posted anonymously', 
+    //                                 'FG3: Late assignments or deliverables are not accepted',
+    //                                  'FG4: Make-up midterms are offered', 
+    //                                  'FG5: The lowest assessment grades will not count towards your total grade', 
+    //                                  'FG6: Your top M out of N scores will count towards your final grade',
+    //                                 'FG7: There are multiple attempts for assignments'];
 
     const [courseNumber, setCourseNumber] = useState("");
     const [campus, setCampus] = useState("");
     const [courseSubject, setCourseSubject] = useState("");
     const [selectedFaculty, setSelectedFaculty] = useState([]);
-    const [flexibilityGuidelineRanges, setFlexibilityGuidelineRanges] = useState(Array(flexibilityGuidelines.length).fill("All"));
-    
+    const [flexibilityGuidelines, setFlexibilityGuidelines] = useState([]);
+    const [flexibilityGuidelineRanges, setFlexibilityGuidelineRanges] = useState([]);
+    // var [faculties, setFaculties] = useState([]);
+
+    /** DB Interaction **/
+    // var fetchFacultyList = async () => {
+    //     try{
+    //         const query = await API.graphql({ query: getFacultyList });
+    //         const fac =  JSON.parse(query.data.getFacultyList.result);
+    //         console.log("fac: ", fac);
+    //         const faculties_i = [];
+            
+    //         for(var i in fac){
+    //             faculties_i.push(fac[i].faculty);
+    //         }
+
+    //         setFaculties(faculties_i);
+    //     } catch (err){
+    //         console.log(err);
+    //     }
+    // }
+
+    /**
+     * 
+     * Fetch guideline from remote database and update the this.state to re-render DOM 
+     */
+    var fetchGuideline = async () => {
+        try{
+            const query = await API.graphql({ query: getAllGuidelines });
+            console.log("data 2: ", query);
+            const guidelines =  JSON.parse(query.data.getAllGuidelines.result);
+
+            /** Load queried data into page **/
+            if(query.data.getAllGuidelines.statusCode === 200){
+                var selected_update = [];
+                var setRange = [];
+                for(var gl in guidelines){
+                    selected_update.push(guidelines[gl].guideline);
+                    setRange.push("All");
+                    
+                }
+
+                setFlexibilityGuidelines(selected_update);
+                setFlexibilityGuidelineRanges(setRange);
+            }
+        } catch (err){
+            console.log(err);
+            throw new Error("There are some problems with getting guidelines.");
+        }
+    }
+
+    useEffect(() => {
+        fetchGuideline();
+    }, []);
+
     {/* Changes courseNumber value to the entered text value */}
     const handleCourseNumberChange = (event) => {
         setCourseNumber(event.target.value);

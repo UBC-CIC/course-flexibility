@@ -173,16 +173,13 @@ class CourseTable extends Component {
             <>
                 {
                     result.map((item, index) =>{
-                        if(this.props.flexibilityGuidelineRanges[index] === "Yes" &&
-                            item.confScore < this.props.MAX_YES){
+                        if(this.props.flexibilityGuidelineRanges[index] === "Yes"){
                                 this.FGFilters[rowIndex] = false;
                         }
-                        else if(this.props.flexibilityGuidelineRanges[index] === "No" &&
-                            item.confScore > this.props.MIN_NO){
+                        else if(this.props.flexibilityGuidelineRanges[index] === "No"){
                                 this.FGFilters[rowIndex] = false;
                         }
-                        else if(this.props.flexibilityGuidelineRanges[index] === "Maybe" &&
-                            (item.confScore >= this.props.MAX_YES || item.confScore <= this.props.MIN_NO)){
+                        else if(this.props.flexibilityGuidelineRanges[index] === "Maybe"){
                                 this.FGFilters[rowIndex] = false;
                         }
                     })                 
