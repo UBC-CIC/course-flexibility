@@ -107,7 +107,7 @@ function CoursePage(){
         setSelectedFaculty(value);
         };
 
-    {/* Changes slider position based on user input*/}
+    {/* Changes selected drop down options based on user input*/}
     const handleFlexibilityGuidelineChange = (event, index) => {
         setFlexibilityGuidelineRanges((prevState) => ({
             ...prevState,
@@ -140,6 +140,7 @@ function CoursePage(){
                 courseSubject={courseSubject} 
                 selectedFaculty={selectedFaculty}
                 flexibilityGuidelineRanges={flexibilityGuidelineRanges}
+                flexibilityGuidelines={flexibilityGuidelines}
                 MAX_YES={MAX_YES}
                 MIN_NO={MIN_NO}/>
                 </Grid>
