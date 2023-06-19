@@ -96,7 +96,7 @@ class FacultyAnalysisInfo extends Component {
           },
           yaxis: {
             title: {
-              text: "YES Percentage (%)",
+              text: "Yes Percentage (%)",
               offsetX: -5,
               style: {
                 fontSize: '14px',
@@ -142,6 +142,7 @@ class FacultyAnalysisInfo extends Component {
             {this.state.loadTable &&
             <Grid xs={12}>
                 <div style={this.style.box}>
+                <Typography variant={"h6"}><span style={{fontWeight: 'bold'}}> Percentage of Courses in the {this.dataParam.faculty} With a Result of Yes for Each Guideline Over Time </span></Typography>
                 <Chart
                     type="line"
                     width={'100%'}

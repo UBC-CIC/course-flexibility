@@ -99,7 +99,7 @@ class AnalysisInfo extends Component {
         } else if(item.result_txt === "no" && item.confScore >= MAX_CONF_SOCRE){
             return <Typography variant={"h6"} style={{ color: '#ef5350' }} display="inline">{this.page.result.no}</Typography>
         } else{
-            return <Typography variant={"h6"} style={{ color: '#ff9800' }} display="inline">{this.page.result.maybe} {item.result_txt}, </Typography>
+            return <Typography variant={"h6"} style={{ color: '#ff9800' }} display="inline">{this.page.result.maybe}, </Typography>
         }
 
 
