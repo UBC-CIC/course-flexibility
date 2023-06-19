@@ -85,7 +85,6 @@ export default function SearchFilters({courseNumber, handleCourseNumberChange,
         try{
             const query = await API.graphql({ query: getFacultyList });
             const fac =  JSON.parse(query.data.getFacultyList.result);
-            console.log("fac: ", fac);
             const faculties_i = [];
             
             for(var i in fac){

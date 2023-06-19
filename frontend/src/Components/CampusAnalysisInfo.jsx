@@ -18,7 +18,7 @@ class CampusAnalysisInfo extends Component {
             const query = await API.graphql({ query: getGuidelineCountCampus, variables: { campus: campus} });
             const cam =  JSON.parse(query.data.getGuidelineCountCampus.result);
 
-            console.log("face: ", cam);
+            // console.log("face: ", cam);
 
             let color = [];
             for(var i in cam.arrayGuideline){
@@ -75,13 +75,8 @@ class CampusAnalysisInfo extends Component {
 
     /** Invoke during initialation of component **/
     componentDidMount = async() => {
-        console.log("dataParam: ", this.dataParam);
         /** Fetching all the course **/
         await this.fetchFacultyGuidelinesCount(this.dataParam.campus);
-
-        console.log("this.state: ", this.state);
-
-        console.log("stringToHexColor: ", this.stringToHexColor("MULT"));
 
         this.setState({loadTable: true});
     }

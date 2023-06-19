@@ -59,7 +59,7 @@ class FacultyResultPage extends Component {
             row = JSON.parse(paramURL.get('row'));
             url = process.env.PUBLIC_URL + row.syllURL;
 
-            console.log("Valid page");
+            // console.log("Valid page");
         } catch (e){
             // When catch error, print error page
             console.log("errror!!", e);
