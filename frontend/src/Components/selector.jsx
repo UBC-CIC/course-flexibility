@@ -20,7 +20,6 @@ class Selector extends Component {
     fetchGuideline = async () => {
         try{
             const query = await API.graphql({ query: getAllGuidelines });
-            console.log("data 2: ", query);
             const guidelines =  JSON.parse(query.data.getAllGuidelines.result);
 
             /** Load queried data into page **/
@@ -45,7 +44,6 @@ class Selector extends Component {
                 query: addGuideline, variables: { guideline: guideline, guidelineCode: code}
             });
 
-            console.log("mutation: ", mutation);
         } catch(err){
             console.log(err);
             throw new Error("There are some problems with uploading guidelines.");
@@ -58,7 +56,6 @@ class Selector extends Component {
                 query: removeGuideline, variables: { guidelineID: JSON.stringify(guidelines) }
             });
 
-            console.log("mutation (delete): ", mutation);
         } catch(err){
             console.log(err);
             throw new Error("There are some problems with deleting guidelines.");
@@ -271,7 +268,7 @@ class Selector extends Component {
                         // Fetch all the avialable guidelies and update DOM
                         await this.fetchGuideline();
     
-                        val = "Add guideline successful!";
+                        val = "The guideline addition was successful. This process may take some time.";
                     } else {
                         console.log("Error: ", val);
                     }

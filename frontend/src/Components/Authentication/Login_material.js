@@ -463,11 +463,14 @@ function Login(props) {
                                     <TextFieldStartAdornment startIcon={<AlternateEmailIcon/>} placeholder={"Email"} name={"email"} type={"email"} onChange={onChange}/>
                                     {/* password */}
                                     <TextFieldStartAdornment startIcon={<LockIcon/>} placeholder={"Password"} name={"password"} type={"password"} onChange={onChange} />
-                                    <Grid className={`${classes.flexDisplay} ${classes.forgetPassword} ${classes.cursor}`}
+                                    
+                                    {/* forget */}
+                                    {/* <Grid className={`${classes.flexDisplay} ${classes.forgetPassword} ${classes.cursor}`}
                                         onClick={() => resetStates("forgotPassword")}
-                                    > {/* forget */}
+                                    > 
                                         <span style={{textAlign: "end"}}>Forgot your password?</span>
-                                    </Grid>
+                                    </Grid> */}
+                                    
                                     <Grid className={`input-box ${classes.marginTop}`}> {/* sign in button */}
                                         <SubmitButtonWithLoading submitAction={signIn} submitMessage={"Sign In"} loadingState={loading}/>
                                     </Grid>
