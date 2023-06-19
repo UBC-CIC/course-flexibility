@@ -116,7 +116,7 @@ export class ApiStack extends Stack {
         role: lambdaRole,
         memorySize: 512,
         environment: {
-          DB_SECRET_NAME: databaseStack.secretPath,
+          SM_DB_CREDENTIALS: databaseStack.secretPath,
         },
         vpc: vpcStack.vpc,
         code: lambda.Code.fromAsset("./lambda/gqlResolverLambda"),
@@ -168,34 +168,39 @@ export class ApiStack extends Stack {
     const apiSchema = new appsync.CfnGraphQLSchema(this, "GraphQLSchema", {
       apiId: APIID,
       definition: `
+      type Object {
+        statusCode: Int!
+        result: String!
+      }
+      
       type Mutation {
+        # Guideline operations
         addGuideline(guideline: String!, guidelineCode: String!): Object
         removeGuideline(guidelineID: String!): Object
         startJobRun(guideline: String!): Object
         loadSQL(sql: String!): Object
       }
       
-      type Object {
-        statusCode: Int!
-        result: String!
-      }
-      
       type Query {
-        getTodo: Object!
+        #Guideline operations
         getAllGuidelines: Object!
+        # Syllabus operations
+        ####################### String - JSON formate of the data
         getAllSyllabusMetadata(offset: Int!): Object!
         getSyllabusAnalysis(syllabusID: String!): Object!
         getFacultyResult: Object!
         getCampusResult: Object!
         getFacultyList: Object!
+        getGuidelineCountCampus(campus: String!): Object!
+        getGuidelineCountFaculty(faculty: String!): Object!
       }
       `,
     });
 
     // Create all the unit resolvers for GraphQL type Query and Mutation
     let queriesList = [
-      "getTodo", "getAllGuidelines", "getAllSyllabusMetadata", "getSyllabusAnalysis", "getFacultyResult",
-      "getCampusResult", "getFacultyList"
+      "getAllGuidelines", "getAllSyllabusMetadata", "getSyllabusAnalysis", "getFacultyResult",
+      "getCampusResult", "getFacultyList", "getGuidelineCountCampus", "getGuidelineCountFaculty"
     ];
 
     for (let i = 0; i < queriesList.length; i++) {

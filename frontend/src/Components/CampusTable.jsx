@@ -50,15 +50,12 @@ class CampusTable extends Component {
         try{
             const query = await API.graphql({ query: getCampusResult });
             const cam =  JSON.parse(query.data.getCampusResult.result);
-            // console.log("syllabi: ", syllabi[0]);
             
             for(var i in cam){
                 cam[i].id = i;
             }
-            console.log("query: ", cam);
             
             this.rows = cam;
-            console.log("this.rows: ", this.rows);
         } catch (err){
             console.log(err);
         }
@@ -71,8 +68,6 @@ class CampusTable extends Component {
     
     /** Handler and Status Function **/
     handlerAnalysisMoreInfo = (param, event) =>{
-        // console.log("param: ",  param, "event: ", event)
-        console.log("Output: ", this.rows[Number(param)]);
 
         window.open(
             '/campus?row='+ JSON.stringify(this.rows[Number(param)]),
@@ -82,11 +77,11 @@ class CampusTable extends Component {
 
     FGAnalysis = (result) => {
         const handleClickNo = (event) => {
-            console.log(event.target.outerText)
+            // console.log(event.target.outerText)
         };
 
         const handleClickMaybe = (event) => {
-            console.log(event.target.outerText)
+            // console.log(event.target.outerText)
         };
 
         return (
