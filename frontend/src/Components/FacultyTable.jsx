@@ -54,7 +54,7 @@ class FacultyTable extends Component {
             for(var i in fac){
                 fac[i].id = i;
             }
-            console.log("query: ", fac);
+            // console.log("query: ", fac);
             
             this.rows = fac;
         } catch (err){
@@ -74,7 +74,7 @@ class FacultyTable extends Component {
         // console.log("param: ",  param, "event: ", event)
         const indexFound = this.rows.findIndex(e => e.id === Number(param));
 
-        console.log("Output: ", this.rows[Number(param)]);
+        // console.log("Output: ", this.rows[Number(param)]);
 
         window.open(
             '/faculty?row='+ JSON.stringify(this.rows[Number(param)]),
@@ -84,11 +84,11 @@ class FacultyTable extends Component {
 
     FGAnalysis = (result) => {
         const handleClickNo = (event) => {
-            console.log(event.target.outerText)
+            // console.log(event.target.outerText)
         };
 
         const handleClickMaybe = (event) => {
-            console.log(event.target.outerText)
+            // console.log(event.target.outerText)
         };
 
         return (

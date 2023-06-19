@@ -50,7 +50,7 @@ class CourseTable extends Component {
     rows = [];  // All table rows
 
     /* true if confScores of guidelines within range of slider filters, false if not within range */
-    FGFilters = Array(this.rows.length).fill(true);
+    FGFilters = [Array(this.rows.length).fill(true)];
 
 
     /** DB Interaction **/
@@ -150,12 +150,12 @@ class CourseTable extends Component {
 
                             if(item.result_txt === "yes" && item.confScore >= MAX_CONF_SCORE){
                                 item.result_txt = "Yes";
-                                return <Chip key={item.guideline_id} label={this.guidlineCode[item.guideline_id].code + ": Yes(" + item.confScore + "%)"} color="success" onClick={this.handleClickSnackBar.bind(this,item)} sx={this.margineSpace} variant="outlined"/>;
+                                return <Chip key={item.guideline_id} label={this.guidlineCode[item.guideline_id].code + ": Yes (" + item.confScore + "%)"} color="success" onClick={this.handleClickSnackBar.bind(this,item)} sx={this.margineSpace} variant="outlined"/>;
                             } else if (item.result_txt === "no" && item.confScore >= MAX_CONF_SCORE){
                                 item.result_txt = "No";
                                 return <Chip key={item.guideline_id} label={this.guidlineCode[item.guideline_id].code + ": No (" + item.confScore + "%)"} color="error" onClick={this.handleClickSnackBar.bind(this,item)} sx={this.margineSpace} variant="outlined"/>;
                             } else {
-                                item.result_txt = "Maybe " + item.result_txt;
+                                item.result_txt = "Maybe";
                                 return <Chip key={item.guideline_id} label={this.guidlineCode[item.guideline_id].code + ": "+ item.result_txt + " (" + item.confScore + "%)"} color="warning" onClick={this.handleClickSnackBar.bind(this,item)} sx={this.margineSpace} variant="outlined"/>;
                             }
                     })
@@ -170,13 +170,17 @@ class CourseTable extends Component {
             <>
                 {
                     result.map((item, index) =>{
-                        if(this.props.flexibilityGuidelineRanges[index] === "Yes"){
+                        const guideline = this.guidlineCode[item.guideline_id].guideline;
+                        const filterGuideline = this.props.flexibilityGuidelines;
+                        /* console.log(guideline, filterGuideline); */
+                        const guidelineIndex = filterGuideline.findIndex(item => item === guideline);
+                        if(this.props.flexibilityGuidelineRanges[guidelineIndex] === "Yes" && (item.result_txt != "yes" || item.confScore < 60)){
                                 this.FGFilters[rowIndex] = false;
                         }
-                        else if(this.props.flexibilityGuidelineRanges[index] === "No"){
+                        else if(this.props.flexibilityGuidelineRanges[guidelineIndex] === "No" && (item.result_txt != "no" || item.confScore < 60)){
                                 this.FGFilters[rowIndex] = false;
                         }
-                        else if(this.props.flexibilityGuidelineRanges[index] === "Maybe"){
+                        else if(this.props.flexibilityGuidelineRanges[guidelineIndex] === "Maybe" && item.confScore >= 60){
                                 this.FGFilters[rowIndex] = false;
                         }
                     })                 
