@@ -109,7 +109,7 @@ export class DataWorkflowStack extends Stack {
       {
         functionName: "courseFlexibility-createFoldersAndDBTables",
         runtime: lambda.Runtime.PYTHON_3_9,
-        handler: "lambda_handler",
+        handler: "triggerLambda.lambda_handler",
         timeout: cdk.Duration.seconds(300),
         memorySize: 512,
         environment: {
@@ -139,7 +139,18 @@ export class DataWorkflowStack extends Stack {
         ],
       })
     );
-
+    triggerLambda.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: [
+          //Secrets Manager
+          "secretsmanager:GetSecretValue",
+        ],
+        resources: [
+          `arn:aws:secretsmanager:${this.region}:${this.account}:secret:courseFlexibility/credentials/*`,
+        ],
+      })
+    );
     triggerLambda.addToRolePolicy(
       new iam.PolicyStatement({
         effect: Effect.ALLOW,
@@ -226,7 +237,7 @@ export class DataWorkflowStack extends Stack {
     );
 
     const PYTHON_VER = "3.9";
-    const GLUE_VER = "4.0";
+    const GLUE_VER = "3.0";
     const MAX_RETRIES = 0; // no retries, only execute once
     const MAX_CAPACITY = 1; // 1/16 of a DPU, lowest setting
     const MAX_CONCURRENT_RUNS = 7; // 7 concurrent runs of the same job simultaneously
@@ -335,12 +346,12 @@ export class DataWorkflowStack extends Stack {
       },
     });
 
-    // Deploy glue job to glue S3 bucket
-    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles1", {
-      sources: [s3deploy.Source.asset("./glue/artifacts")],
-      destinationBucket: glueS3Bucket,
-      destinationKeyPrefix: "artifacts",
-    });
+    // // Deploy glue job to glue S3 bucket
+    // new s3deploy.BucketDeployment(this, "DeployGlueJobFiles1", {
+    //   sources: [s3deploy.Source.asset("./glue/artifacts")],
+    //   destinationBucket: glueS3Bucket,
+    //   destinationKeyPrefix: "artifacts",
+    // });
 
     // Deploy glue job to glue S3 bucket
     new s3deploy.BucketDeployment(this, "DeployGlueJobFiles2", {
