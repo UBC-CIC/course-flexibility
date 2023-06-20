@@ -339,7 +339,7 @@ def process_s3_event(s3event):
     # print(s3event)
     if "Records" in s3event:
 
-        # s3 file path UBCV/2023/CPSC_110_otherThing.pdf
+        # s3 file path public/UBCV/2023/CPSC_110_otherThing.pdf
         s3FilePath = s3event["Records"][0]["s3"]["object"]["key"]
         # some file name have are url encoded due to special characters and needs to be restore to original file name.
         s3FilePath = urllib.parse.unquote_plus(s3FilePath)
@@ -355,10 +355,10 @@ def process_s3_event(s3event):
             error_msg = f"File {fileName} contains invalid file extension, currently supported extensions are {valid_extensions}"
             raise InvalidFileExtensionException(error_msg)
 
-        date_upload = s3FilePath.split("/")[1]  # 2023
+        date_upload = s3FilePath.split("/")[2]  # 2023
         campus = "n/a"
         faculty = "n/a"
-        campus = s3FilePath.split("/")[0]  # UBC
+        campus = s3FilePath.split("/")[1]  # UBC
 
         mapping_subset = courseMapping.query("Campus == @campus")
         mapping_subset_dict = mapping_subset.to_dict("records")
@@ -390,7 +390,7 @@ def process_s3_event(s3event):
             "campus": campus,
             "faculty": faculty,
             "date_uploaded": date_upload,
-            "s3_filepath": s3FilePath,
+            "s3_filepath": s3FilePath.lstrip("public/"), # get rid of the prefix public/
             "analyzed": False,
             "metadata": metadata
         }

@@ -86,15 +86,15 @@ export class DataWorkflowStack extends Stack {
     amplifyStorageBucket.addObjectCreatedNotification(
       new s3n.SqsDestination(s3EventQueue),
       {
-        prefix: "UBCV/",
+        prefix: "public/",
       }
     ) 
-    amplifyStorageBucket.addObjectCreatedNotification(
-      new s3n.SqsDestination(s3EventQueue),
-      {
-        prefix: "UBCO/",
-      }
-    );
+    // amplifyStorageBucket.addObjectCreatedNotification(
+    //   new s3n.SqsDestination(s3EventQueue),
+    //   {
+    //     prefix: "public/UBCV/",
+    //   }
+    // );
 
     // The layer containing the psycopg2 library
     const psycopg2 = new lambda.LayerVersion(this, "psycopg2", {

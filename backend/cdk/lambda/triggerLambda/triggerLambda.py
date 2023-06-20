@@ -118,7 +118,6 @@ def lambda_handler(event, context):
 
     # CREATE A FOLDER STRUCTURE FOR THE AMPLIFY S3 STORAGE with a public/ top level folder
 
-    s3.put_object(Bucket=BUCKET_NAME, Key="UBCV/")
-    s3.put_object(Bucket=BUCKET_NAME, Key="UBCO/")
+    s3.put_object(Bucket=BUCKET_NAME, Key="public/")
     
     print("Trigger Function scripts finished execution successfully!")
