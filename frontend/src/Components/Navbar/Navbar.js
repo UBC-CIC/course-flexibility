@@ -25,7 +25,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink } from 'react-router-dom';
 
 
-{/* List of tabs for the header */}
+/* List of tabs for the header */
 const pages = ['dashboard', 'courses', 'settings'];
 
 const useStyles = makeStyles((theme) => ({

@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Select from '@mui/material/Select';
 import { FormControl, MenuItem, InputLabel, TextField, 
-    Grid, ListItemIcon, ListItemText, Checkbox, Button, OutlinedInput, Slider} from '@mui/material';
+    Grid, ListItemIcon, ListItemText, Checkbox, Button } from '@mui/material';
     
 import { API } from "aws-amplify";
 import {getFacultyList, getAllGuidelines} from "../graphql/queries";

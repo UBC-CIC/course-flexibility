@@ -11,7 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { TableFooter, TablePagination, Chip, Popover, Typography, Snackbar, Alert} from '@mui/material';
+import { Chip } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { API } from "aws-amplify";
@@ -42,7 +42,7 @@ class CampusTable extends Component {
     /** Class Data Variables **/
     rows = [];  // All table rows
 
-    /* true if confScores of guidelines within range of slider filters, false if not within range */
+    /* true if confScores of guidelines match filter value, false if not */
     FGFilters = Array(this.rows.length).fill(true)
 
     /** DB Interaction **/
@@ -76,14 +76,6 @@ class CampusTable extends Component {
     }
 
     FGAnalysis = (result) => {
-        const handleClickNo = (event) => {
-            // console.log(event.target.outerText)
-        };
-
-        const handleClickMaybe = (event) => {
-            // console.log(event.target.outerText)
-        };
-
         return (
             <div>
                 {
