@@ -123,7 +123,7 @@ def download_files(invoke_mode, download_dir='syllabus_files'):
         try:
             full_local_path = os.path.join(local_file_path, filename)
             with open(full_local_path, 'wb') as f:
-                s3_client.download_fileobj(bucket_name, s3_key, f)
+                s3_client.download_fileobj(bucket_name, "public/" + s3_key, f) # download from the public/ prefix
         except NotADirectoryError:
              print(f"File not found for syllabus_path: {full_local_path}. Skipping...")
 

@@ -1,0 +1,30 @@
+version: 1
+backend:
+  phases:
+    build:
+      commands:
+    # npm install -g @aws-amplify/cli
+        - cd frontend
+        - "# Execute Amplify CLI with the helper script"
+        - amplifyPush --simple
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd frontend
+        - nvm use 14
+        - npm ci
+    # IMPORTANT - Please verify your build commands
+    build:
+      commands:
+        - nvm use 14
+        - npm run build
+  artifacts:
+    # IMPORTANT - Please verify your build output directory
+    baseDirectory: ./frontend/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - "!node_modules/.cache"
