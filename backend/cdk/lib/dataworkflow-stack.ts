@@ -50,13 +50,13 @@ export class DataWorkflowStack extends Stack {
       this,
       "courseFlexibility-glue-s3bucket",
       {
+        bucketName: "courseFlexibility-glueS3Bucket",
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         autoDeleteObjects: true,
         versioned: false,
         publicReadAccess: false,
         blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         encryption: s3.BucketEncryption.S3_MANAGED,
-        serverAccessLogsPrefix: "accessLog",
       }
     );
 

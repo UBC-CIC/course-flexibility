@@ -23,21 +23,23 @@ const app = new cdk.App();
 //   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 // });
 
-const vpcStack = new VpcStack(app, "VpcStack", {
+const identifier = "courseFlexibility"
+
+const vpcStack = new VpcStack(app, `${identifier}-VpcStack`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
 
-const databaseStack = new DatabaseStack(app, "DatabaseStack", vpcStack, {
+const databaseStack = new DatabaseStack(app, `${identifier}-DatabaseStack`, vpcStack, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
 
-const apiStack = new ApiStack(app, "ApiStack", vpcStack, databaseStack, {
+const apiStack = new ApiStack(app, `${identifier}-ApiStack`, vpcStack, databaseStack, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
@@ -46,7 +48,7 @@ const apiStack = new ApiStack(app, "ApiStack", vpcStack, databaseStack, {
 
 const dataWorkflowStack = new DataWorkflowStack(
   app,
-  "DataWorkflowStack",
+  `${identifier}-DataWorkflowStack`,
   vpcStack,
   databaseStack,
   {

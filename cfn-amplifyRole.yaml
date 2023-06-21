@@ -3,7 +3,7 @@ Resources:
   AmplifyRole:
     Type: "AWS::IAM::Role"
     Properties:
-      RoleName: amplifyconsole-course-flex-backend-role
+      RoleName: amplifyconsole-courseflexibility-backend-role
       Description: IAM Role to deploy amplify Course Flexibility Project
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
