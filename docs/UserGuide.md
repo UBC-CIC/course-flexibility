@@ -6,47 +6,47 @@
 
 | Index                                        | Description                                           |
 | :------------------------------------------  | :---------------------------------------------------- |
-| [Dashboard](#Dashboard)                      | Data visualization based on faculty and campus                    |
-| [Course](#Course)                | Search through each courses                 |
-| [Setting](#Setting)              | Make changes to guidelines                                   |
-| [Load Syllabi](#Load-Syllabi)              | Load new syllabus to the system|
+| [Dashboard](#Dashboard)                      | Data visualization based on faculty and campus        |
+| [Course](#Course)                            | Data visualization based on courses                   |
+| [Setting](#Setting)                          | Make changes to guidelines                            |
+| [Load Syllabi](#Load-Syllabi)                | Load new syllabi to the system                        |
 
 **Note:** The screenshots contained in this User Guide show some information as redacted to obscure data that is not fully up to date.
 <br>
 
 ## Dashboard
 
-The Dashboard page shows the two types of content ([Faculty](#Faculty) and [Campus](#Campus)). The tab on top allows user to switch between the two contents. In each conents there is a filtering mechanism to better search through data. Below a filtering option, there is a data visualization mainly in the form of a table.
+The Dashboard page shows the two types of content ([Faculty](#Faculty) and [Campus](#Campus)). The tab on top allows a user to switch between the two contents. In each content, there is a filtering mechanism to search through data. Below the filter component, there is a data visualization, mainly in the form of a table.
 
 ### Faculty
-By default, dashboard page will load the faculty page. User can also access the faculty page through the top tab as mentioned above. This page contains a table with info about each faculty in the database.
+By default, the dashboard page will load the faculty page. A user can also access the faculty page through the top tab below the main navigation bar. This page contains a table with information about each faculty in the database.
 
-User can access a more detail analysis of a faculty by clicking the arrow on the right of each faculty. This will open another tab as shown in [Faculty Analysis](#Faculty-Analysis) screenshot.
+A user can access a more detailed analysis of a faculty by clicking the arrow on the right of each faculty (i.e., each row). This will open another tab as shown in the [Faculty Analysis](#Faculty-Analysis) screenshot.
 
 ![alt text](assets/dashboard/dashboard_faculty.png)
 
 #### Faculty Analysis
-The graph below shows the amount of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that analyzed as "Yes" for a given guideline. Hover the mouse cursor on the data points will give a detail result of each guideline in a given year. For example, 81% of all the courses in the Faculty of Science analyzed as "Yes" to "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023.
+The graph below shows the number of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that were analyzed as "Yes" for a given guideline. Hovering the mouse cursor on the data points, user can see a detailed result of each guideline in a given year. For example, 81% of all the courses in the Faculty of Science analyzed as "Yes" to "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023.
 
 ![alt text](assets/dashboard/dashboard_faculty_data.png)
 
 ### Campus
-User can access the campus page through the top tab under main navigation bar. This page contains a table with info about each campuse.
+A user can access the campus page through the top tab under the main navigation bar. This page contains a table with information about each campus.
 
-User can access a more detail analysis of a campus by clicking the arrow on the right of each campus. This will open another tab as shown in [Campus Analysis](#Campus-Analysis) screenshot.
+A user can access a more detailed analysis of a campus by clicking the arrow on the right of each campus. This will open another tab as shown in the [Campus Analysis](#Campus-Analysis) screenshot.
 
 ![alt text](assets/dashboard/dashboard_campus.png)
 
 ### Campus Analysis
-The graph below is similar to the graph in the [Faculty Analysis](#Faculty-Analysis) page, except that the data is based on a selected campus.
+The graph below is similar to the graph in the [Faculty Analysis](#Faculty-Analysis) page, except that the data is based on the selected campus.
 ![alt text](assets/dashboard/dashboard_campus_data.png)
 
 ## Course
-This page can be accessed by clicking on the main navigation bar call "Courses". This will give analysis results into each courses.
+This page is accessed by clicking on the main navigation bar called "Courses". This page will give analysis results into each course.
 
-The top row of the page shows various filters including campus, course subject, course number, and faculty. There are also [Advanced Filter](#Advanced-Filter) option to archive more complex filter. 
+On the top of the page is the filter function which includes a filter base on campus, course subject, course number, and faculty. There is also an [Advanced Filter](#Advanced-Filter) option to archive more complex filters. 
 
-Below the filter is a table showing meta-data of a course and analysis summary in each row. Similar to faculty/campus page, clicking on the arrow on the right will bring user to the [Course More Detail](#Course-More-Detail) page. Clicking on any box in the Analysis Result column will load a pop up explaining the result as shown in [Course Pop Up](#Course-Pop-Up). Each box has various color depending on the analysis: 
+Below the filter is a table showing the meta-data of a course and an analysis summary in each row. Similar to the faculty/campus page, clicking on the arrow on the right will bring a user to the [Course More Detail](#Course-More-Detail) page. Clicking on any box in the Analysis Result column will load a pop-up explaining the result as shown in [Course Pop Up](#Course-Pop-Up). Each box has various colors depending on the analysis: 
 * Green indicates "Yes" result
 * Red indicates "No" result
 * Orange indicates "Maybe" result
@@ -54,72 +54,72 @@ Below the filter is a table showing meta-data of a course and analysis summary i
 ![alt text](assets/course/course_main.png)
 
 ### Advanced Filter
-There are four option to select for each guideline: All, Yes, Maybe, and No.
-* All, any result is choosen or don't care
-* Yes, only result that is "Yes"
-* Maybe, only result that could not distinguish between "Yes" and "No"
-* No, only result that is "No"
+There are four options to select for each guideline: All, Yes, Maybe, and No.
+* All, means don't care (i.e., display everything regardless of the result)
+* Yes, display only the result that is "Yes"
+* Maybe, display only results that could not distinguish between "Yes" and "No"
+* No, display only results that is "No"
 
 ![alt text](assets/course/course_main_advance_filter.png)
 
 ### Course Pop Up
-Pop up gives detail to what is the guideline code stand for, the result in text and percentage.
+The Pop-up gives detail about what the guideline code represents, the result in text form, and the confident level.
 ![alt text](assets/course/course_main_info_alert.png)
 
 ### Course Load More
 The load more button below the table will load new data from the database. This button will be hidden after it loads all the data available.
 
-**Note:** When doing filters on the table, it only filters data that is currently loaded. Hence, user has to load new data to keep filtering new ones.
+**Note:** When doing filters on the table, it only filters data that is currently loaded (i.e., not the data in the database). Hence, a user has to load new data to keep filtering new ones.
 
 <br>
 
 ![alt text](assets/course/course_main_load_more.png)
 
 #### Course More Detail
-This page give details to meta data of the course, the syllabus, and analysis of each guideline. The analysis of each guideline shows the result in numeric form and also the sentence that the machine learning model extracted from the syallabus. 
+This page gives details on the meta-data of the course, the syllabus, and an analysis of each guideline. The analysis of each guideline shows the result in numeric form and also the sentences that the machine learning model extracted from the syllabus. 
 
-**Note:** The syllabus view only shows the PDF file. Users has to download the document if there is a different file type than a PDF. Downloading document, user can click on the blue text call "Open File".
+**Note:** The syllabus view only shows the PDF format. A user has to download the document if the syllabus is in a different file type than PDF. To download a document, the user can click on the blue text called "Open File".
 
 <br>
 
 ![alt text](assets/course/course_data.png)
 
 ## Setting
-This page can be accessed by clicking on the main navigation bar call "Settings". This will give user to add/remove guidelines.
+This page is accessed by clicking on the main navigation bar called "Settings". This will give a user the ability to add/remove guidelines.
 
-In the middle is a list of guidelines that is analysized or currenly analysizing.
+In the middle is a list of guidelines that are analyzed or currently analyzed.
 ![alt text](assets/setting/setting_main.png)
 
 ### Add Guideline
-Clicking on the green plus button at the bottom will load a form to add new guideline. The first text box is the description of the guideline. The guideline description should be unique and descriptive enough for the module to search through syllabus. The second text box is the shortcut or lable for guideline; this should also unique from other guidelines.
+By clicking on the green plus button at the bottom, the webpage will load a form to add new guidelines. The first text box is the description of the guideline. The guideline description should be unique and descriptive enough for the module to search through each syllabus. The second text box is the shortcut or label for guidelines; this should also be unique from other guidelines.
 
-Clicking ADD GUIDELINE will show a pop up for an [Add Guideline Pop Up](#Add-Guideline-Pop-Up).
+Clicking ADD GUIDELINE will show a pop-up for an [Add Guideline Pop Up](#Add-Guideline-Pop-Up).
 
 ![alt text](assets/setting/setting_main_add_guideline.png)
 
 ### Add Guideline Pop Up
-The pop up is just to confirm if user wants to add the guideline and happy with the description and shortcut. Clicking ADD & START will add the guideline in the data base run the ML module to analyze all courses with that new guideline.
+The pop-up is just to confirm if a user wants to add the guideline and is happy with the description and shortcut. Clicking ADD & START will add the guideline to the database and trigger the ML model to analyze all courses with that new guideline.
 
-**Note:** The analysis process takes some time to complete, please be patience with that. In addition, there are up to 7 guidelines that could be run at the same time.
+**Note:** The analysis process takes some time to complete, please be patient with that. In addition, there are up to 7 guidelines that could run at the same time.
 
 <br>
 
 ![alt text](assets/setting/setting_main_add_guideline_confirmation.png)
 
 ### Delete Guideline Pop Up
-To delete guideline(s), user need to select guidelines(s) to delete and a delete button will pop up. After clicking DELETE SELECTED, a pop up confirmation will be shown.
+To delete guideline(s), a user needs to select guideline(s) to delete, and a delete button will pop up. After clicking DELETE SELECTED, a pop-up confirmation will be shown.
 ![alt text](assets/setting/setting_main_delete_confirmation.png)
 
 
 # Load Syllabi
-To load new guideline, user need to use AWS Console interface. In the AWS Console: 
-1. Search for Amazon S3.
+To load new guidelines, users need to use the AWS Console interface. In the AWS Console: 
+1. Search for Amazon S3 in the search bar and click on it
 2. On the left navigation bar, click on "Buckets" 
 3. Search for "courseflexibilitystorage152354-dev"
-4. Go to "public" folder
-5. Select campus to upload syllabus as can be seen in Fig LS1.
-6. Select year or create new year by clicking "Create Folder" can shown in Fig LS2.
-7. A new page is open as shown in Fig LS3. User need to provide folder and leave default setting. Then click "Create Folder".
+4. Go to the "public" folder
+5. Select the campus to upload the syllabi, as can be seen in Fig LS1
+6. Select a year or create a new year by clicking "Create Folder" as shown in Fig LS2
+7. A new page is open as shown in Fig LS3. A user need to provide a folder name and leave the default setting. Then click "Create Folder".
 8. Click on the newly created folder and click "Upload" as shown in Fig LS4.
 
 <br>
