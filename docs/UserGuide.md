@@ -125,10 +125,16 @@ To load new guideline, user need to use AWS Console interface. In the AWS Consol
 <br>
 
 ![alt text](assets/addGuideline/main_page.png)
-Fig LS1. AWS Console for selecting campus.
+*Fig LS1. AWS Console for selecting campus.*
+<br>
+
 ![alt text](assets/addGuideline/main_page_load.png)
-Fig LS2. AWS Console for selecting year.
+*Fig LS2. AWS Console for selecting year.*
+<br>
+
 ![alt text](assets/addGuideline/main_page_create_folder.png)
-Fig LS3. AWS Console for creating a folder.
+*Fig LS3. AWS Console for creating a folder.*
+<br>
+
 ![alt text](assets/addGuideline/main_page_load_file.png)
-Fig LS4. AWS Console for uploading syllabi.
+*Fig LS4. AWS Console for uploading syllabi.*
