@@ -9,7 +9,7 @@
 | [Dashboard](#Dashboard)                      | Data visualization based on faculty and campus                    |
 | [Course](#Course)                | Search through each courses                 |
 | [Setting](#Setting)              | Make changes to guidelines                                   |
-| [Load Syllabus](#Load-Syllabus)              | Load new syllabus to the system|
+| [Load Syllabi](#Load-Syllabi)              | Load new syllabus to the system|
 
 **Note:** The screenshots contained in this User Guide show some information as redacted to obscure data that is not fully up to date.
 <br>
@@ -70,15 +70,18 @@ Pop up gives detail to what is the guideline code stand for, the result in text 
 The load more button below the table will load new data from the database. This button will be hidden after it loads all the data available.
 
 **Note:** When doing filters on the table, it only filters data that is currently loaded. Hence, user has to load new data to keep filtering new ones.
+
 <br>
 
 ![alt text](assets/course/course_main_load_more.png)
 
-#### Course Analysis
+#### Course More Detail
 This page give details to meta data of the course, the syllabus, and analysis of each guideline. The analysis of each guideline shows the result in numeric form and also the sentence that the machine learning model extracted from the syallabus. 
 
 **Note:** The syllabus view only shows the PDF file. Users has to download the document if there is a different file type than a PDF. Downloading document, user can click on the blue text call "Open File".
+
 <br>
+
 ![alt text](assets/course/course_data.png)
 
 ## Setting
@@ -98,9 +101,34 @@ Clicking ADD GUIDELINE will show a pop up for an [Add Guideline Pop Up](#Add-Gui
 The pop up is just to confirm if user wants to add the guideline and happy with the description and shortcut. Clicking ADD & START will add the guideline in the data base run the ML module to analyze all courses with that new guideline.
 
 **Note:** The analysis process takes some time to complete, please be patience with that. In addition, there are up to 7 guidelines that could be run at the same time.
+
 <br>
+
 ![alt text](assets/setting/setting_main_add_guideline_confirmation.png)
 
 ### Delete Guideline Pop Up
 To delete guideline(s), user need to select guidelines(s) to delete and a delete button will pop up. After clicking DELETE SELECTED, a pop up confirmation will be shown.
 ![alt text](assets/setting/setting_main_delete_confirmation.png)
+
+
+# Load Syllabi
+To load new guideline, user need to use AWS Console interface. In the AWS Console: 
+1. Search for Amazon S3.
+2. On the left navigation bar, click on "Buckets" 
+3. Search for "courseflexibilitystorage152354-dev"
+4. Go to "public" folder
+5. Select campus to upload syllabus as can be seen in Fig LS1.
+6. Select year or create new year by clicking "Create Folder" can shown in Fig LS2.
+7. A new page is open as shown in Fig LS3. User need to provide folder and leave default setting. Then click "Create Folder".
+8. Click on the newly created folder and click "Upload" as shown in Fig LS4.
+
+<br>
+
+![alt text](assets/addGuideline/main_page.png)
+Fig LS1. AWS Console for selecting campus.
+![alt text](assets/addGuideline/main_page_load.png)
+Fig LS2. AWS Console for selecting year.
+![alt text](assets/addGuideline/main_page_create_folder.png)
+Fig LS3. AWS Console for creating a folder.
+![alt text](assets/addGuideline/main_page_load_file.png)
+Fig LS4. AWS Console for uploading syllabi.
