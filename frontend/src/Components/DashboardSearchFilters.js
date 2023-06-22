@@ -1,27 +1,20 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import Select from '@mui/material/Select';
-import { FormControl, MenuItem, InputLabel, TextField, 
-    Grid, ListItemIcon, ListItemText, Checkbox, Button, Slider} from '@mui/material';
+import { FormControl, MenuItem, InputLabel, Grid, ListItemIcon, ListItemText, Checkbox} from '@mui/material';
 
 
 import { API } from "aws-amplify";
 import {getFacultyList} from "../graphql/queries";
 
 
-export default function DashboardSearchFilters({selectedFaculty, handleFacultyChange, selectedYear, handleYearChange}){
-
-    // const faculties = [];
+export default function DashboardSearchFilters({selectedFaculty, handleFacultyChange}){
+    
     var [faculties, setFaculties] = useState([]);
-    const years = ["2022W", "2021W", "2020W", "2019W"];
 
     const isAllFacultiesSelected =
     faculties.length > 0 && selectedFaculty.length === faculties.length;
-
-    const isAllYearsSelected =
-    years.length > 0 && selectedYear.length === years.length;
 
     /** DB Interaction **/
     var fetchFacultyList = async () => {

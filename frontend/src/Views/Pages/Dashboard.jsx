@@ -6,17 +6,11 @@ import CampusSearchFilters from '../../Components/CampusSearchFilters';
 import CampusTable from '../../Components/CampusTable';
 
 export default function Dashboard(){
-    const MAX_YES = 0.7;
-    const MIN_NO = 0.3;
-
-    const faculties = ['Faculty of Science', 'Faculty of Arts', "Faculty of Medicine",
-    'Faculty of Education', 'Faculty of Applied Science'];
-    const years = ["2022W", "2021W", "2020W", "2019W"];
+    const faculties = [];
 
     const [campus, setCampus] = useState("");
-    const [toggleValue, setToggleValue] = useState("faculty");
     const [selectedFaculty, setSelectedFaculty] = useState([]);
-    const [selectedYear, setSelectedYear] = useState([]);
+    const [toggleValue, setToggleValue] = useState("faculty");
 
     /* Changes toggle value */
     const handleToggleChange = (event, newToggleValue) => {
@@ -25,12 +19,12 @@ export default function Dashboard(){
         }
     };
 
-    {/* Changes campus value to the selected drop down choice */}
+    /* Changes campus value to the selected drop down choice */
     const handleCampusChange = (event) => {
         setCampus(event.target.value);
     };
 
-    {/* Changes faculty value to the selected drop down choices */}
+    /* Changes faculty value to the selected drop down choices */
     const handleFacultyChange = (event) => {
         const value = event.target.value;
         if (value[value.length - 1] === "all") {
@@ -38,16 +32,6 @@ export default function Dashboard(){
             return;
         }
         setSelectedFaculty(value);
-        };
-
-    {/* Changes year value to the selected drop down choices */}
-    const handleYearChange = (event) => {
-        const value = event.target.value;
-        if (value[value.length - 1] === "all") {
-            setSelectedYear(selectedYear.length === years.length ? [] : years);
-            return;
-        }
-        setSelectedYear(value);
         };
 
     return(
@@ -71,15 +55,9 @@ export default function Dashboard(){
                         <div>
                             <CampusSearchFilters 
                             campus = {campus} 
-                            handleCampusChange={handleCampusChange}
-                            selectedYear = {selectedYear}
-                            handleYearChange={handleYearChange}/>
+                            handleCampusChange={handleCampusChange}/>
                             <CampusTable 
-                            MAX_YES={MAX_YES}
-                            MIN_NO={MIN_NO}
-                            campus={campus} 
-                            selectedFaculty = {selectedFaculty}
-                            selectedYear = {selectedYear}/>
+                            campus={campus} />
                         </div>
                     )
                     } else if (toggleValue === "faculty") {
@@ -87,16 +65,9 @@ export default function Dashboard(){
                         <div>
                             <DashboardSearchFilters 
                             selectedFaculty = {selectedFaculty}
-                            handleFacultyChange={handleFacultyChange}
-                            selectedYear = {selectedYear}
-                            handleYearChange={handleYearChange}/>
+                            handleFacultyChange={handleFacultyChange}/>
                             <FacultyTable 
-                            MAX_YES={MAX_YES}
-                            MIN_NO={MIN_NO}
-                            selectedFaculty = {selectedFaculty}
-                            handleFacultyChange={handleFacultyChange}
-                            selectedYear = {selectedYear}
-                            handleYearChange={handleYearChange}/>
+                            selectedFaculty = {selectedFaculty}/>
                         </div>
                     )
                     } 

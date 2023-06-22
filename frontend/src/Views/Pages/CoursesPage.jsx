@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Grid } from '@mui/material';
 import CourseTable from '../../Components/courseTable';
@@ -8,11 +8,8 @@ import { API } from "aws-amplify";
 import {getFacultyList, getAllGuidelines} from "../../graphql/queries";
 
 function CoursePage(){
-    const MAX_YES = 0.7;
-    const MIN_NO = 0.3;
 
-    const faculties = ['Faculty of Science', 'Faculty of Pharmaceutical Sciences', 
-    'Faculty of Education', 'Faculty of Applied Science'];
+    const faculties = [];
 
     /* Array of flexibility guidelines */
     // const flexibilityGuidelines = ['FG1: Online recordings of lectures can be accessed', 
@@ -56,7 +53,7 @@ function CoursePage(){
     var fetchGuideline = async () => {
         try{
             const query = await API.graphql({ query: getAllGuidelines });
-            console.log("data 2: ", query);
+            // console.log("data 2: ", query);
             const guidelines =  JSON.parse(query.data.getAllGuidelines.result);
 
             /** Load queried data into page **/
@@ -82,22 +79,22 @@ function CoursePage(){
         fetchGuideline();
     }, []);
 
-    {/* Changes courseNumber value to the entered text value */}
+    /* Changes courseNumber value to the entered text value */
     const handleCourseNumberChange = (event) => {
         setCourseNumber(event.target.value);
     };
 
-    {/* Changes campus value to the selected drop down choice */}
+    /* Changes campus value to the selected drop down choice */
     const handleCampusChange = (event) => {
         setCampus(event.target.value);
     };
 
-    {/* Changes courseSubject value to the entered text value */}
+    /* Changes courseSubject value to the entered text value */
     const handleCourseSubjectChange = (event) => {
         setCourseSubject(event.target.value);
     };
 
-    {/* Changes faculty value to the selected drop down choices */}
+    /* Changes faculty value to the selected drop down choices */
     const handleFacultyChange = (event) => {
         const value = event.target.value;
         if (value[value.length - 1] === "all") {
@@ -107,7 +104,7 @@ function CoursePage(){
         setSelectedFaculty(value);
         };
 
-    {/* Changes selected drop down options based on user input*/}
+    /* Changes selected drop down options based on user input*/
     const handleFlexibilityGuidelineChange = (event, index) => {
         setFlexibilityGuidelineRanges((prevState) => ({
             ...prevState,
@@ -140,9 +137,7 @@ function CoursePage(){
                 courseSubject={courseSubject} 
                 selectedFaculty={selectedFaculty}
                 flexibilityGuidelineRanges={flexibilityGuidelineRanges}
-                flexibilityGuidelines={flexibilityGuidelines}
-                MAX_YES={MAX_YES}
-                MIN_NO={MIN_NO}/>
+                flexibilityGuidelines={flexibilityGuidelines}/>
                 </Grid>
             </Grid>
         </div>);

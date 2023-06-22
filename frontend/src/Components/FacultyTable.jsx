@@ -11,7 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { TableFooter, TablePagination, Chip, Popover, Typography, Snackbar, Alert} from '@mui/material';
+import { Chip } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { API } from "aws-amplify";
@@ -72,7 +72,7 @@ class FacultyTable extends Component {
     /** Handler and Status Function **/
     handlerAnalysisMoreInfo = (param, event) =>{
         // console.log("param: ",  param, "event: ", event)
-        const indexFound = this.rows.findIndex(e => e.id === Number(param));
+        // const indexFound = this.rows.findIndex(e => e.id === Number(param));
 
         // console.log("Output: ", this.rows[Number(param)]);
 
@@ -83,14 +83,6 @@ class FacultyTable extends Component {
     }
 
     FGAnalysis = (result) => {
-        const handleClickNo = (event) => {
-            // console.log(event.target.outerText)
-        };
-
-        const handleClickMaybe = (event) => {
-            // console.log(event.target.outerText)
-        };
-
         return (
             <div>
                 {
