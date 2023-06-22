@@ -115,7 +115,8 @@ To delete guideline(s), a user needs to select guideline(s) to delete, and a del
 To load new guidelines, users need to use the AWS Console interface. In the AWS Console: 
 1. Search for Amazon S3 in the search bar and click on it
 2. On the left navigation bar, click on "Buckets" 
-3. Search for "courseflexibilitystorage152354-dev"
+3. Search for the bucket whose name contains the identifier `courseflexibilitystorage`. Note that the full name will have some more characters, but will always
+contain the string `courseflexibilitystorage`.
 4. Go to the "public" folder
 5. Select the campus to upload the syllabi, as can be seen in Fig LS1
 6. Select a year or create a new year by clicking "Create Folder" as shown in Fig LS2
