@@ -13,6 +13,18 @@ If you are on a Windows device, it is recommended to install the [Windows Subsys
 
 # Deployment walkthrough
 
+### Table of Contents
+* [Step 1: Clone the repository ](#step-1-clone-the-repository)    
+* [Step 2: Frontend deployment](#step-2-frontend-deployment)          
+* [Step 3: Backend deployment  ](#step-3-backend-deployment)                                                 
+    * [Step 3.1: Install dependencies](#step-1-install-dependencies)                                            
+    * [Step 3.2: Upload the database secret](#step-2-upload-the-database-secret)                            
+    * [Step 3.3: CDK Deployment](#step-3-cdk-deployment)                                                          
+    * [Step 3.4: Uploading the artifact files for the deep learning pipeline  ](#step-4-uploading-the-artifact-files-for-the-deep-learning-pipeline)                                          
+    * [Step 3.5: Uploading the syllabus files](#step-5-uploading-the-syllabus-files)                                          
+    * [Step 3.6: Invoking the deep learning pipeline](#step-6-invoking-the-deep-learning-pipeline)                                         
+    * [Step 3.7: Creating a user](#step-7-creating-a-user)                                          
+
 ## Step 1: Clone The Repository
 
 First, clone the GitHub repository onto your machine. To do this:
@@ -64,11 +76,11 @@ The **Deploy to Amplify Console** button will take you to your AWS console to de
    Refer to [AWS's Page on Single Page Apps](https://docs.aws.amazon.com/amplify/latest/userguide/redirects.html#redirects-for-single-page-web-apps-spa) for further information on why we did that
    ![alt text](images/deployment_guide/amplify/amplifydeploy5.png)
 
-## Step 2: Backend Deployment
+## Step 3: Backend Deployment
 
 It's time to set up everything that goes on behind the scenes! For more information on how the backend works, feel free to refer to the Architecture Deep Dive, but an understanding of the backend is not necessary for deployment.
 
-### 1. Install Dependencies
+### Step 1: Install Dependencies
 
 The first step is to get into the backend folder. Assuming you are currently still inside the root folder `course-flexibility/`, this can be done with the following commands:
 
