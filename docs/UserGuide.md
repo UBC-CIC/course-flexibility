@@ -16,7 +16,7 @@
 
 ## Dashboard
 
-The Dashboard page shows the two types of content ([Faculty](#Faculty) and [Campus](#Campus)). The tab on top allows a user to switch between the two contents. In each content, there is a filtering mechanism to search through data. Below the filter component, there is a data visualization, mainly in the form of a table.
+The Dashboard page shows two types of content ([Faculty](#Faculty) and [Campus](#Campus)). The tab on top allows a user to switch between the two contents. In each content, there is a filtering mechanism to search through data. Below the filter component there is a table that displays information about each faculty/campus.
 
 ### Faculty
 By default, the dashboard page will load the faculty page. A user can also access the faculty page through the top tab below the main navigation bar. This page contains a table with information about each faculty in the database.
@@ -26,7 +26,7 @@ A user can access a more detailed analysis of a faculty by clicking the arrow on
 ![alt text](assets/dashboard/dashboard_faculty.png)
 
 #### Faculty Analysis
-The graph below shows the number of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that were analyzed as "Yes" for a given guideline. Hovering the mouse cursor on the data points, user can see a detailed result of each guideline in a given year. For example, 81% of all the courses in the Faculty of Science analyzed as "Yes" to "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023.
+The graph below shows the number of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that were analyzed as "Yes" for a given guideline. By hovering the mouse cursor on the data points, a user can see a detailed result of each guideline in a given year. For example, 81% of all the analyzed courses in the Faculty of Science were analyzed as "Yes" for the "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023.
 
 ![alt text](assets/dashboard/dashboard_faculty_data.png)
 
@@ -42,11 +42,11 @@ The graph below is similar to the graph in the [Faculty Analysis](#Faculty-Analy
 ![alt text](assets/dashboard/dashboard_campus_data.png)
 
 ## Course
-This page is accessed by clicking on the main navigation bar called "Courses". This page will give analysis results into each course.
+This page is accessed by clicking on the main navigation bar called "Courses". This page will give analysis results for each course.
 
-On the top of the page is the filter function which includes a filter base on campus, course subject, course number, and faculty. There is also an [Advanced Filter](#Advanced-Filter) option to archive more complex filters. 
+On the top of the page are the filters which includes a filter base on campus, course subject, course number, and faculty. There is also an [Advanced Filter](#Advanced-Filter) option to access more complex filters. 
 
-Below the filter is a table showing the meta-data of a course and an analysis summary in each row. Similar to the faculty/campus page, clicking on the arrow on the right will bring a user to the [Course More Detail](#Course-More-Detail) page. Clicking on any box in the Analysis Result column will load a pop-up explaining the result as shown in [Course Pop Up](#Course-Pop-Up). Each box has various colors depending on the analysis: 
+Below the filters is a table showing the meta-data of a course and an analysis summary in each row. Similar to the faculty/campus page, clicking on the arrow on the right will bring a user to the [Course More Detail](#Course-More-Detail) page. Clicking on any box in the Analysis Result column will load a pop-up explaining the result as shown in [Course Pop Up](#Course-Pop-Up). Each box has various colors depending on the analysis: 
 * Green indicates "Yes" result
 * Red indicates "No" result
 * Orange indicates "Maybe" result
@@ -56,9 +56,9 @@ Below the filter is a table showing the meta-data of a course and an analysis su
 ### Advanced Filter
 There are four options to select for each guideline: All, Yes, Maybe, and No.
 * All, means don't care (i.e., display everything regardless of the result)
-* Yes, display only the result that is "Yes"
-* Maybe, display only results that could not distinguish between "Yes" and "No"
-* No, display only results that is "No"
+* Yes, means display only results that are "Yes"
+* Maybe, means display only results that could not distinguish between "Yes" and "No"
+* No, means display only results that are "No"
 
 ![alt text](assets/course/course_main_advance_filter.png)
 
@@ -87,7 +87,7 @@ This page gives details on the meta-data of the course, the syllabus, and an ana
 ## Setting
 This page is accessed by clicking on the main navigation bar called "Settings". This will give a user the ability to add/remove guidelines.
 
-In the middle is a list of guidelines that are analyzed or currently analyzed.
+In the middle is a list of guidelines that are analyzed or currently analyzing.
 ![alt text](assets/setting/setting_main.png)
 
 ### Add Guideline
@@ -119,7 +119,7 @@ To load new guidelines, users need to use the AWS Console interface. In the AWS 
 4. Go to the "public" folder
 5. Select the campus to upload the syllabi, as can be seen in Fig LS1
 6. Select a year or create a new year by clicking "Create Folder" as shown in Fig LS2
-7. A new page is open as shown in Fig LS3. A user need to provide a folder name and leave the default setting. Then click "Create Folder".
+7. A new page is open as shown in Fig LS3. A user needs to provide a folder name and leave the default settings. Then click "Create Folder".
 8. Click on the newly created folder and click "Upload" as shown in Fig LS4.
 
 <br>
