@@ -156,17 +156,17 @@ To upload the files, follow these steps:
 
 Before uploading, it is recommended that you organize the files into their respective campuses on your local computer before continuing.
 
-1. To upload the syllabus files on S3, first navigate to the designated S3 bucket on the S3 console. Look for a bucket with name containing the identifier `courseflexibilitystorage`. Again, the bucket's full name might be different, but will always contain the above identifier.
+1. To upload the syllabus files on S3, first navigate to the designated S3 bucket on the S3 console. Look for a bucket with the name containing the identifier `courseflexibilitystorage`. Again, the bucket's full name might be different, but will always contain the above identifier.
    ![alt text](images/deployment_guide/upload/upload1.png)
-1. Navigate into the bucket, you will a folder called `public/` that has already been created. Click on the folder to navigate into it.
+1. Navigate into the bucket, you will see a folder called `public/` that has already been created. Click on the folder to navigate into it.
    ![alt text](images/deployment_guide/upload/upload2.png)
-1. Now this is the important step. You would create as many folder as there are unique campuses in the `course_campus_faculty_mapping.csv` file. For example, the example file in the [guide](FilePreparationGuide.md), there are 2 unique faculty (e.g UBCV, UBCO), then you would have to create 2 folders with **exact name** as whown below
+1. Now this is the important step. You need to create as many folders as there are unique campuses in the `course_campus_faculty_mapping.csv` file. For example, in the example file in the [guide](FilePreparationGuide.md), there are 2 unique campuses (e.g UBCV, UBCO), so you would have to create 2 folders with the **exact names** as shown below
    ![alt text](images/deployment_guide/upload/upload3.png)
-1. Again, navigate inside each of those campus subfolder (e.g UBCV, UBCO) and create a folder with the current year that you are uploading the syllabus files. The current solution assume you are uploading 1 batch of files every year. So for example, if the current date at the time that you're uploading is Wed, Jun 21, 2023, then create a folder called `2023/` in all the campus sub-folders. (However, if your upload frequency is is different, you may name the folder in a YYYY-MM-DD format instead e.g `2023-06-21/`)
+1. Again, navigate inside each of those campus subfolder (e.g., UBCV, UBCO) and create a folder with the current year that you are uploading the syllabus files. The current solution assume you are uploading 1 batch of files every year. So for example, if the current date at the time that you're uploading is Wed, Jun 21, 2023, then create a folder called `2023/` in all the campus sub-folders. However, if your upload frequency is different, you may name the folder in a YYYY-MM-DD format instead (e.g., `2023-06-21/`)
    ![alt text](images/deployment_guide/upload/upload4.png)
 1. Navigate into the respective subfolder and upload the file according to the campus. For example, if you are inside the `public/UBCV/2023/` subfolder then you would only upload the files that are belonged to the UBCV campus.
    ![alt text](images/deployment_guide/upload/upload5.png)
-1. Similarly, navigate to the other sub-folders e.g `public/UBCO/2023/` and upload their respective syllabi. If some campuses do not have syllabi, simply skip the uploading step and just keep the year folder empty.
+1. Similarly, navigate to the other sub-folders (e.g., `public/UBCO/2023/`) and upload their respective syllabi. If some campuses do not have syllabi, simply skip the uploading step and just keep the year folder empty.
    ![alt text](images/deployment_guide/upload/upload6.png)
 1. After uploading all the syllabi into their respective folders, wait for 1-2 minutes before continuing to the next step
 
@@ -200,6 +200,6 @@ To set up user accounts on the app, you will need to do the following steps
    ![alt text](images/deployment_guide/cognito/cognito5.png)
 1. The user will receive an email to the email address that was previously entered containing their temporary password.
    ![alt text](images/deployment_guide/cognito/cognito6.png)
-1. When the user enters their email and temporary password on the sign in page of the app, they will then be prompted to replace their temporary password by setting a new password.
+1. When the user enters their email and temporary password on the sign in page of the app, they will then be prompted to replace their temporary password by setting a new password. <br>
    ![alt text](images/deployment_guide/cognito/cognito7.png)
 1. The new user account has been created!
