@@ -50,7 +50,7 @@ export class DataWorkflowStack extends Stack {
       this,
       "courseFlexibility-glue-s3bucket",
       {
-        bucketName: "courseFlexibility-glueS3Bucket",
+        bucketName: "glues3bucket",
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         autoDeleteObjects: true,
         versioned: false,

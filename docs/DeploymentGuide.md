@@ -139,7 +139,7 @@ The file `qa_model_weights.pth` can be found under the folder `backend/cdk/glue/
 
 To upload the files, follow these steps:
 
-1. On your AWS Console, navigate to the S3 console and search for a bucket contain this identifier inside the name `glueS3Bucket`. **Note:** the actual full name might be the same or different since AWS sometimes append extra random character into the bucket name to make it unique. But it will always contain our custom identifier `glueS3Bucket` in the name.
+1. On your AWS Console, navigate to the S3 console and search for a bucket contain this identifier inside the name `glues3bucket`. **Note:** the actual full name might be the same or different since AWS sometimes append extra random character into the bucket name to make it unique. But it will always contain our custom identifier `glues3bucket` in the name.
    ![alt text](images/deployment_guide/artifact/artifacts4.png)
 1. Navigate into the bucket and click `Create folder`
    ![alt text](images/deployment_guide/artifact/artifacts5.png)
