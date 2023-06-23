@@ -52,3 +52,4 @@ amplifytools.xcconfig
 
 amplify/team-provider-info.json
 back_end/cdk/cdk.context.json
+*.idea/
