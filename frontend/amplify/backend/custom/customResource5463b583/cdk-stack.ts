@@ -32,7 +32,12 @@ export class cdkStack extends cdk.Stack {
       stringValue: GraphQLAPIEndpointOutput,
     });
 
-    const s3FileStorage = cdk.Fn.ref(dependencies.storage.courseFlexibilityStorage.BucketName)
+    // const s3FileStorage = cdk.Fn.ref(dependencies.storage.courseFlexibilityStorage.BucketName)
+    // Note from dev: for some reason the line above does not work but the code earlier for GraphQLAPI works
+    // This could be due to a library issue
+    // instead here we passing a string directly "storagecourseFlexibilityStorageBucketName"
+    // base on this github issue: https://github.com/aws-amplify/amplify-hosting/issues/2478
+    const s3FileStorage = cdk.Fn.ref("storagecourseFlexibilityStorageBucketName")
     new ssm.StringParameter(this, 'CourseFlexibilityStorageBucketName', {
       parameterName: 'CourseFlexibilityStorageS3BucketName',
       stringValue: s3FileStorage,

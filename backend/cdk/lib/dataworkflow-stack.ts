@@ -48,9 +48,8 @@ export class DataWorkflowStack extends Stack {
     // Glue deployment bucket
     const glueS3Bucket = new s3.Bucket(
       this,
-      "courseFlexibility-glue-s3bucket",
+      "glue-s3bucket",
       {
-        bucketName: "glues3bucket",
         removalPolicy: cdk.RemovalPolicy.DESTROY,
         autoDeleteObjects: true,
         versioned: false,

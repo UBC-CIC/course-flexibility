@@ -1,17 +1,23 @@
 version: 1
 backend:
   phases:
+    preBuild:
+      commands:
+        - cd frontend
+        # print the file to the terminal (for debugging)
+        - cat amplify/backend/types/amplify-dependent-resources-ref.d.ts
+        # - npm install -g @aws-amplify/cli
+        # - npm i aws-amplify
     build:
       commands:
-    # npm install -g @aws-amplify/cli
-        - cd frontend
         - "# Execute Amplify CLI with the helper script"
         - amplifyPush --simple
 frontend:
   phases:
     preBuild:
       commands:
-        - cd frontend
+        # don't need cd frontend since already in the directory from the backend build
+        # - cd frontend
         - nvm use 14
         - npm ci
     # IMPORTANT - Please verify your build commands

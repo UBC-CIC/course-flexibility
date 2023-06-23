@@ -14,16 +14,20 @@ If you are on a Windows device, it is recommended to install the [Windows Subsys
 # Deployment walkthrough
 
 ### Table of Contents
-* [Step 1: Clone the repository ](#step-1-clone-the-repository)    
-* [Step 2: Frontend deployment](#step-2-frontend-deployment)          
-* [Step 3: Backend deployment  ](#step-3-backend-deployment)                                                 
-    * [Step 3.1: Install dependencies](#step-1-install-dependencies)                                            
-    * [Step 3.2: Upload the database secret](#step-2-upload-the-database-secret)                            
-    * [Step 3.3: CDK Deployment](#step-3-cdk-deployment)                                                          
-    * [Step 3.4: Uploading the artifact files for the deep learning pipeline  ](#step-4-uploading-the-artifact-files-for-the-deep-learning-pipeline)                                          
-    * [Step 3.5: Uploading the syllabus files](#step-5-uploading-the-syllabus-files)                                          
-    * [Step 3.6: Invoking the deep learning pipeline](#step-6-invoking-the-deep-learning-pipeline)                                         
-    * [Step 3.7: Creating a user](#step-7-creating-a-user)                                          
+- [Requirements](#requirements)
+- [Deployment walkthrough](#deployment-walkthrough)
+    - [Table of Contents](#table-of-contents)
+  - [Step 1: Clone The Repository](#step-1-clone-the-repository)
+  - [Step 2: Frontend Deployment](#step-2-frontend-deployment)
+  - [Step 3: Backend Deployment](#step-3-backend-deployment)
+    - [Step 1: Install Dependencies](#step-1-install-dependencies)
+    - [Step 2: Upload the Database secret](#step-2-upload-the-database-secret)
+    - [Step 3: CDK Deployment](#step-3-cdk-deployment)
+    - [Extra: Taking down the deployed stacks](#extra-taking-down-the-deployed-stacks)
+    - [Step 4: Uploading the Artifact files for the Deep Learning Pipeline](#step-4-uploading-the-artifact-files-for-the-deep-learning-pipeline)
+    - [Step 5: Uploading the syllabus files](#step-5-uploading-the-syllabus-files)
+    - [Step 6: Invoking the Deep Learning Pipeline](#step-6-invoking-the-deep-learning-pipeline)
+    - [Step 7: Creating a User](#step-7-creating-a-user)
 
 ## Step 1: Clone The Repository
 
@@ -102,7 +106,8 @@ You would  have to supply a custom database username when deploying the solution
 aws secretsmanager create-secret \
     --name courseFlexibility-dbUsername \
     --description "Custom username for PostgreSQL database" \
-    --secret-string "{\"username\":\"DB-USERNAME\"}"
+    --secret-string "{\"username\":\"DB-USERNAME\"}" \
+    --profile your-profile-name
 ```
 
 For example: you want to set the database username as "courseFlexibility"
@@ -111,7 +116,8 @@ For example: you want to set the database username as "courseFlexibility"
 aws secretsmanager create-secret \
     --name courseFlexibility-dbUsername \
     --description "Custom username for PostgreSQL database" \
-    --secret-string "{\"username\":\"courseFlexibility\"}"
+    --secret-string "{\"username\":\"courseFlexibility\"}" \
+    --profile your-profile-name
 ```
 
 ### Step 3: CDK Deployment

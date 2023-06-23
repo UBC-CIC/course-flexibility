@@ -38,6 +38,7 @@ const databaseStack = new DatabaseStack(app, `${identifier}-DatabaseStack`, vpcS
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
+databaseStack.addDependency(vpcStack);
 
 const apiStack = new ApiStack(app, `${identifier}-ApiStack`, vpcStack, databaseStack, {
   env: {
@@ -45,6 +46,8 @@ const apiStack = new ApiStack(app, `${identifier}-ApiStack`, vpcStack, databaseS
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
+apiStack.addDependency(vpcStack);
+apiStack.addDependency(databaseStack);
 
 const dataWorkflowStack = new DataWorkflowStack(
   app,
@@ -58,3 +61,5 @@ const dataWorkflowStack = new DataWorkflowStack(
     },
   }
 );
+dataWorkflowStack.addDependency(vpcStack);
+dataWorkflowStack.addDependency(databaseStack);

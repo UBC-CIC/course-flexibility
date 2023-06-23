@@ -111,7 +111,7 @@ export class ApiStack extends Stack {
       {
         functionName: "courseFlexibility-gqlResolverLambda",
         runtime: lambda.Runtime.NODEJS_16_X,
-        handler: "gqlResolverLambda.lambda_handler",
+        handler: "gqlResolverLambda.handler",
         timeout: cdk.Duration.seconds(300),
         role: lambdaRole,
         memorySize: 512,

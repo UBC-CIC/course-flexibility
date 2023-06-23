@@ -6,15 +6,17 @@ let glue_client = new AWS.Glue();
 
 let { SM_DB_CREDENTIALS } = process.env;
 
-exports.handler = async (event, context) => {
-  /** Seting up postgres package **/
-  let sm = await secretsManager
+let sql; // Global variable to hold the database connection
+
+async function initializeConnection() {
+  // Retrieve the secret from AWS Secrets Manager
+  const secret = await secretsManager
     .getSecretValue({ SecretId: SM_DB_CREDENTIALS })
     .promise();
 
-  let credentials = JSON.parse(sm.SecretString);
+  const credentials = JSON.parse(secret.SecretString);
 
-  let connectionConfig = {
+  const connectionConfig = {
     host: credentials.host,
     port: credentials.port,
     username: credentials.username,
@@ -23,8 +25,19 @@ exports.handler = async (event, context) => {
     ssl: true,
   };
 
-  let sql = postgres(connectionConfig);
+  // Create the PostgreSQL connection
+  sql = postgres(connectionConfig);
 
+  console.log("Database connection initialized");
+}
+
+exports.handler = async (event, context) => {
+  
+  // Initialize the database connection if not already initialized
+  if (!sql) {
+    await initializeConnection(); 
+  }
+  
   console.log("event: ", event);
   
   /* Output Object */
@@ -54,7 +67,7 @@ exports.handler = async (event, context) => {
         console.log("mutation: Start Job Run");
         const params = {
           //JobName: "preload_database_with_SQL",
-          JobName: "test-semantic-similarity",
+          JobName: "courseFlexibility-GenerateNLPAnalysis",
           Arguments: {
             "--NEW_GUIDELINE": new_guideline,
             "--INVOKE_MODE": "new_guideline",
@@ -339,7 +352,10 @@ exports.handler = async (event, context) => {
   }
   
   // Close connection to DB
-  await sql.end({ timeout: 0 });
+  // Since we are reusing the connection for subsequent Lambda invocation, we
+  // do not want to close the connection
+  // await sql.end({ timeout: 0 });
   console.log(response)
   return response;
 };
+
