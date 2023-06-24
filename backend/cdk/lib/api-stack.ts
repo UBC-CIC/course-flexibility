@@ -117,6 +117,7 @@ export class ApiStack extends Stack {
         memorySize: 512,
         environment: {
           SM_DB_CREDENTIALS: databaseStack.secretPath,
+          RDS_PROXY_ENDPOINT: databaseStack.rdsProxyEndpoint
         },
         vpc: vpcStack.vpc,
         code: lambda.Code.fromAsset("./lambda/gqlResolverLambda"),

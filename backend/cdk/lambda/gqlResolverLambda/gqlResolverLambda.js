@@ -4,7 +4,7 @@ let postgres = require("postgres");
 let secretsManager = new AWS.SecretsManager();
 let glue_client = new AWS.Glue();
 
-let { SM_DB_CREDENTIALS } = process.env;
+let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT } = process.env;
 
 let sql; // Global variable to hold the database connection
 
@@ -17,7 +17,7 @@ async function initializeConnection() {
   const credentials = JSON.parse(secret.SecretString);
 
   const connectionConfig = {
-    host: credentials.host,
+    host: RDS_PROXY_ENDPOINT, // using the proxy endpoint instead of db host
     port: credentials.port,
     username: credentials.username,
     password: credentials.password,
