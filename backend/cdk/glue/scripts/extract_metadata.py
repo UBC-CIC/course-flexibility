@@ -135,34 +135,6 @@ def load_text_from_docx(path):
 
 
 """
-@params path: bytesIO or string (path)
-@return: string
-
-This function converts html to text
-"""
-
-
-# def load_text_from_html(path):
-#     # Load the HTML content
-#     url = r"file:///" + path
-#     html = urlopen(url).read()
-#     soup = BeautifulSoup(html, features="html.parser")
-#     # Remove script and style elements from the HTML
-#     for script in soup(["script", "style"]):
-#         script.extract()
-#     # Get the plain text from the HTML
-#     text = soup.get_text()
-#     # Split text into lines and remove leading/trailing spaces
-#     lines = (line.strip() for line in text.splitlines())
-#     # Split lines into chunks and remove extra spaces
-#     chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-#     # Join the chunks with newlines
-#     html_text = '\n'.join(chunk for chunk in chunks if chunk)
-#     filtered_sentences = preprocess_extracted_text(html_text)
-#     return filtered_sentences
-
-
-"""
 @params text: String, the text corpus to search for the pattern
 @params courseMapppingSubset: List of Dictionaries, the filtered list of course mapping based on campus
 @return: Dictionary
