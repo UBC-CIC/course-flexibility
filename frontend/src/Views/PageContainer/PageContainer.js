@@ -16,8 +16,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Navbar from "../../Components/Navbar/Navbar";
 import { connect } from "react-redux";
 import {updateMenuState} from "../../Actions/menuActions";
-import ReactTemplatePage from "../Pages/reactTemplatePage";
-import ControlPanelPage from "../Pages/controlPanelPage";
 
 /** Import Pages **/
 import CoursesPage from '../Pages/CoursesPage';
