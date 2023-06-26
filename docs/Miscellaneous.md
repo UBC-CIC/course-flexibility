@@ -7,4 +7,4 @@ E.g., filepath WITHOUT prefix: `UBCO/2023/syllabus.pdf`
 
 E.g., filepath WITH prefix: `public/UBCO/2023/syllabus.pdf` 
 
-The folder named `public` in the S3 bucket is created to simply match the generated filepath. The name `public` does not mean that the contents within that folder are publicly accessible.  
+The folder named `public` in the S3 bucket is created to simply match the generated filepath. The S3 bucket, including content within the `public` folder, is not publicly accessible.  
