@@ -67,18 +67,6 @@ function App(props) {
                             <BrowserRouter>
                                 <PageContainer />
                             </BrowserRouter>
-
-                            // <Router>
-                            //     {/* Always put the header at the top of the page */}
-                            //     <Header />
-                            //     {/* Route to different pages based on URL path */}
-                            //     <Route path='/' element={<CoursesPage />} />
-                            //     <Route path='/dashboard' element={<Dashboard />} />
-                            //     <Route path='/courses' element={<CoursesPage />} />
-                            //     <Route path='/settings' element={<SettingsPage />} />
-                            //     <Route path='/login' element={<LoginPage />} />
-                            //     <Route path='/result' element={<AnalysisResultPage />} />
-                            // </Router>
                         )
                     }
                 </div>
