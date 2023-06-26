@@ -1,5 +1,7 @@
 # Course Flexibility Project
 
+The purpose of this prototype is to gain an understanding of what level of flexibility is offered to students in courses, due to the lack of aggregate knowledge and dataset of syllabi. This prototype analyzes syllabi using machine learning to determine the flexibility of courses, and displays the results on a dashboard. For more information visit the [CIC Website](https://cic.ubc.ca/). 
+
 | Index                                               | Description                                             |
 | :-------------------------------------------------- | :------------------------------------------------------ |
 | [High Level Architecture](#High-Level-Architecture) | High level overview illustrating component interactions |
