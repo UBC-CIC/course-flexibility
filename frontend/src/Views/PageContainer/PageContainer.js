@@ -1,8 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Route, Switch, useHistory} from 'react-router-dom';
-import Drawer from '@material-ui/core/Drawer';
-import Toolbar from '@material-ui/core/Toolbar';
+import { Route, Switch, useHistory, Redirect} from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -20,7 +18,6 @@ import {updateMenuState} from "../../Actions/menuActions";
 /** Import Pages **/
 import CoursesPage from '../Pages/CoursesPage';
 import Dashboard from '../Pages/Dashboard';
-import LoginPage from '../Pages/LoginPage';
 import SettingsPage from '../Pages/SettingPage';
 import AnalysisResultPage from '../Pages/AnalysisResultPage';
 import FacultyResultPage from '../Pages/FacultyResultPage';
@@ -108,11 +105,11 @@ function PageContainer(props) {
         
         <main className={classes.content}>
             <Switch>
-                <Route exact path={"/"} component={Dashboard}/>
+                <Redirect exact from="/" to="/dashboard" />
                 <Route exact path={"/dashboard"} component={Dashboard}/>
                 <Route exact path={"/courses"} component={CoursesPage}/>
                 <Route exact path={'/settings'} component={SettingsPage} />
-                <Route exact path={'/login'} component={LoginPage} />
+                <Redirect exact from="/login" to="/dashboard" />
                 <Route exact path={'/result'} component={AnalysisResultPage} />
                 <Route exact path={'/faculty'} component={FacultyResultPage} />
                 <Route exact path={'/campus'} component={CampusResultPage} />
