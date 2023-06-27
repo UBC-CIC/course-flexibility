@@ -11,14 +11,16 @@ Before you deploy, you must have the following installed on your device:
 
 If you are on a Windows device, it is recommended to install the [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install), which lets you run a Linux terminal on your Windows computer natively. Some of the steps will require its use. [Windows Terminal](https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701) is also recommended for using WSL.
 
-# Deployment walkthrough
+## Deployment walkthrough
 
 ### Table of Contents
+
 - [Requirements](#requirements)
-- [Deployment walkthrough](#deployment-walkthrough)
+  - [Deployment walkthrough](#deployment-walkthrough)
     - [Table of Contents](#table-of-contents)
   - [Step 1: Clone The Repository](#step-1-clone-the-repository)
   - [Step 2: Frontend Deployment](#step-2-frontend-deployment)
+    - [Amplify Build Issue Workaround](#amplify-build-issue-workaround)
   - [Step 3: Backend Deployment](#step-3-backend-deployment)
     - [Step 1: Install Dependencies](#step-1-install-dependencies)
     - [Step 2: Upload the Database secret](#step-2-upload-the-database-secret)
@@ -28,6 +30,7 @@ If you are on a Windows device, it is recommended to install the [Windows Subsys
     - [Step 5: Uploading the syllabus files](#step-5-uploading-the-syllabus-files)
     - [Step 6: Invoking the Deep Learning Pipeline](#step-6-invoking-the-deep-learning-pipeline)
     - [Step 7: Creating a User](#step-7-creating-a-user)
+    - [Step 8: Deactivating User Self Sign up](#step-8-deactivating-user-self-sign-up)
 
 ## Step 1: Clone The Repository
 
@@ -71,14 +74,32 @@ The **Deploy to Amplify Console** button will take you to your AWS console to de
 
 1. On the AWS console. select your region on the top right, then connect to GitHub.
    ![alt text](images/deployment_guide/amplify/amplifydeploy1.png)
-2. Select the **amplifyconsole-courseflexibility-backend-role** we made previously for the deployment role, and then press `Save and Deploy`.
+1. Select the **amplifyconsole-courseflexibility-backend-role** we made previously for the deployment role, and then press `Save and Deploy`.
    ![alt text](images/deployment_guide/amplify/amplifydeploy2.png)
-3. The deployment will take a few minutes. Wait until all green check marks show up similar to this example.
+1. **Note:** On rare occasions, the Amplify Console will not display an option for you to choose the previously created `amplifyconsole-courseflexibility-backend-role`. In that case, simply proceed through the guided deployment anyway (we are unsure why this issue exists).
+1. The deployment will take a few minutes. Wait until all green check marks show up similar to this example.
    ![alt text](images/deployment_guide/amplify/amplifydeploy3.png)
-4. Click on left taskbar to open menu, click on Rewrites and redirects, and click on edit![alt text](images/deployment_guide/amplify/amplifydeploy4.png)
-5. Click and replace the first rule's source address (or add a rule if there is none) to `</^((?!\.(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|docx|pdf)$).)*$/>`, click and replace target address to `/index.html`, and select and replace **type** with `200 (Rewrite)`. Add a second rule, with the source address as `</^((?!\.(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|docx|pdf)$).)*$/>`, the target address as `/index.html`, and the **type** with `404 (Rewrite)`. After adding the rules, click Save.
+   **Note:** If you could not specify the backend role from the previous step, the build will fail which looks like this:
+   ![alt text](images/deployment_guide/amplify/amplifydeployfix1.png)
+   In that case, follow [this workaround](#amplify-build-issue-workaround) then come back here to continue the next steps.
+1. Click on left taskbar to open menu, click on Rewrites and redirects, and click on edit![alt text](images/deployment_guide/amplify/amplifydeploy4.png)
+1. Click and replace the first rule's source address (or add a rule if there is none) to `</^((?!\.(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|docx|pdf)$).)*$/>`, click and replace target address to `/index.html`, and select and replace **type** with `200 (Rewrite)`. Add a second rule, with the source address as `</^((?!\.(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|docx|pdf)$).)*$/>`, the target address as `/index.html`, and the **type** with `404 (Rewrite)`. After adding the rules, click Save.
    Refer to [AWS's Page on Single Page Apps](https://docs.aws.amazon.com/amplify/latest/userguide/redirects.html#redirects-for-single-page-web-apps-spa) for further information on why we did that
    ![alt text](images/deployment_guide/amplify/amplifydeploy5.png)
+
+### Amplify Build Issue Workaround
+
+If you could not specify the role `amplifyconsole-courseflexibility-backend-role` from the deployment walkthrough on the Amplify console, follow these steps:
+
+a. On the left navigation tab `App settings`, select `General`, then click on `Edit`
+   ![alt text](images/deployment_guide/amplify/amplifydeployfix2.png)
+b. On `Service role`, select the role we created earlier `amplifyconsole-courseflexibility-backend-role` and click `Save`
+   ![alt text](images/deployment_guide/amplify/amplifydeployfix3.png)
+c. Go back to the main app tab and click on the green checkmark `Provision`
+   ![alt text](images/deployment_guide/amplify/amplifydeployfix4.png)
+d. Click on redeploy this version
+   ![alt text](images/deployment_guide/amplify/amplifydeployfix5.png)
+e. Wait till you see the build is complete and all 3 green check-marks appear. You may now continue the rest of the Amplify front end deployment steps.
 
 ## Step 3: Backend Deployment
 
@@ -201,7 +222,6 @@ After all syllabus files have been uploaded, navigate to the AWS Glue console
 1. When a green confirmation shows up, the pipeline has been successfully invoked. No further steps are needed.
    ![alt text](images/deployment_guide/glue/glue4.png)
 
-
 ### Step 7: Creating a User
 
 To set up user accounts on the app, you will need to do the following steps
@@ -221,3 +241,12 @@ To set up user accounts on the app, you will need to do the following steps
 1. When the user enters their email and temporary password on the sign in page of the app, they will then be prompted to replace their temporary password by setting a new password. <br>
    ![alt text](images/deployment_guide/cognito/cognito7.png)
 1. The new user account has been created!
+
+### Step 8: Deactivating User Self Sign up
+
+1. Navigate back to same user pool in the previous step on the Cognito Console, click on `Sign-up experience`.
+ ![alt text](images/deployment_guide/cognito/cognito8.png)
+1. Make sure that the `Self-registration` option is disabled. If it is not, simply click the `Edit` button and
+disable the feature. This will ensure that all users must be manually created on the Cognito Console directly by
+an administrative personnel.
+ ![alt text](images/deployment_guide/cognito/cognito9.png)

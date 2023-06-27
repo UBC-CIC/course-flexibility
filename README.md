@@ -30,7 +30,7 @@ N/A
 
 # Credits
 
-This application was architected and developed by Harshinee Sriram, Tien Nguyen, Visal Saosuo and Liam Driscoll with guidance from the UBC CIC technical and project management teams.
+This application was architected and developed by Harshinee Sriram, Tien Nguyen, Visal Saosuo and Liam Driscoll, with project assistance by Sophie Mok. A special thanks to the UBC Cloud Innovation Centre Technical and Project Management teams for their guidance and support.
 
 # License
 
