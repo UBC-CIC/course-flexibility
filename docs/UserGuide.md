@@ -28,7 +28,7 @@ A user can access a more detailed analysis of a faculty by clicking the arrow on
 
 #### Faculty Analysis
 
-The graph below shows the number of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that were analyzed as "Yes" for a given guideline. By hovering the mouse cursor on the data points, a user can see a detailed result of each guideline in a given year. For example, 81% of all the analyzed courses in the Faculty of Science were analyzed as "Yes" for the "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023.
+The graph below shows the number of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that were analyzed as "Yes" for a given guideline. By hovering the mouse cursor on the data points, a user can see a detailed result of each guideline in a given year. For example, 81% of all the analyzed courses in the Faculty of Science were analyzed as "Yes" for the "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023. Each guideline has a guideline code or shortcut to help shorten the representation of a guideline.
 
 ![alt text](assets/dashboard/dashboard_faculty_data.png)
 
@@ -70,22 +70,21 @@ There are four options to select for each guideline: All, Yes, Maybe, and No.
 
 ### Course Pop Up
 
-The Pop-up gives detail about what the guideline code represents, the result in text form, and the confident level.
+The Pop-up gives detail about what the guideline code represents, the result in text form, and the confidence level.
 ![alt text](assets/course/course_main_info_alert.png)
 
 ### Course Load More
 
-The load more button below the table will load new data from the database. This button will be hidden after it loads all the data available.
+The load more button below the table will load new data from the database in the cloud. This button will be hidden after it loads all the data available.
 
-**Note:** When doing filters on the table, it only filters data that is currently loaded (i.e., not the data in the database). Hence, a user has to load new data to keep filtering new ones.
-
+**Note:** When doing filters on the table, it only filters data that is currently loaded (i.e., not the data in the database). Hence, if a user wants to get all the results for a selected filter, the user has to load all the data from the data first and then apply the filters.
 <br>
 
 ![alt text](assets/course/course_main_load_more.png)
 
 #### Course More Detail
 
-This page gives details on the meta-data of the course, the syllabus, and an analysis of each guideline. The analysis of each guideline shows the result in numeric form and also the sentences that the machine learning model extracted from the syllabus. 
+This page gives details on the meta-data of the course, the syllabus, and an analysis of each guideline. The analysis of each guideline shows the result as a confidence score and also the sentences that the machine learning model extracted from the syllabus. The confidence score is a percentage that represents how accurately the model is detected for a guideline. The higher the confidence score, the more accurate the model detects.
 
 **Note:** The syllabus view only shows the PDF format. A user has to download the document if the syllabus is in a different file type than PDF. To download a document, the user can click on the blue text called "Open File".
 
@@ -102,7 +101,7 @@ In the middle is a list of guidelines that are analyzed or currently analyzing.
 
 ### Add Guideline
 
-By clicking on the green plus button at the bottom, the webpage will load a form to add new guidelines. The first text box is the description of the guideline. The guideline description should be unique and descriptive enough for the module to search through each syllabus. The second text box is the shortcut or label for guidelines; this should also be unique from other guidelines.
+By clicking on the green plus button at the bottom, the webpage will load a form to add new guidelines. The first text box is the description of the guideline. The guideline description should be unique and descriptive enough for the model to search through each syllabus. The second text box is the shortcut or label for guidelines; this should also be unique from other guidelines, and it helps to shorten the representation of a guideline throughout the page.
 
 Clicking ADD GUIDELINE will show a pop-up for an [Add Guideline Pop Up](#Add-Guideline-Pop-Up).
 
@@ -123,33 +122,22 @@ The pop-up is just to confirm if a user wants to add the guideline and is happy 
 To delete guideline(s), a user needs to select guideline(s) to delete, and a delete button will pop up. After clicking DELETE SELECTED, a pop-up confirmation will be shown.
 ![alt text](assets/setting/setting_main_delete_confirmation.png)
 
+**Note:** If a guideline is accidentally deleted, a user can just add the guideline again by following the [Add Guideline](#Add-Guideline) section.
+
 # Load Syllabi
 
-To load new guidelines, users need to use the AWS Console interface. In the AWS Console:
+To load new syllabi, users need to use the AWS Console interface. In the AWS Console:
 
 1. Search for Amazon S3 in the search bar and click on it
 2. On the left navigation bar, click on "Buckets" 
 3. Search for the bucket whose name contains the identifier `courseflexibilitystorage`. Note that the full name will have some more characters, but will always
 contain the string `courseflexibilitystorage`.
 4. Go to the "public" folder
-5. Select the campus to upload the syllabi, as can be seen in Fig LS1
-6. Select a year or create a new year by clicking "Create Folder" as shown in Fig LS2
-7. A new page is open as shown in Fig LS3. A user needs to provide a folder name and leave the default settings. Then click "Create Folder".
-8. Click on the newly created folder and click "Upload" as shown in Fig LS4.
-
-<br>
-
-![alt text](assets/addGuideline/main_page.png)
-*Fig LS1. AWS Console for selecting campus.*
-<br>
-
-![alt text](assets/addGuideline/main_page_load.png)
-*Fig LS2. AWS Console for selecting year.*
-<br>
-
-![alt text](assets/addGuideline/main_page_create_folder.png)
-*Fig LS3. AWS Console for creating a folder.*
-<br>
-
-![alt text](assets/addGuideline/main_page_load_file.png)
-*Fig LS4. AWS Console for uploading syllabi.*
+5. Select the campus to upload the syllabi
+   ![alt text](assets/addGuideline/main_page.png)
+7. Select a year or create a new year by clicking "Create Folder".
+   ![alt text](assets/addGuideline/main_page_load.png)
+9. A new page is open as shown in the screenshot below. A user needs to provide a folder name and leave the default settings. Then click "Create Folder". To keep things simple, a user needs to only provide the year in integer form like "2023" or "2024".
+   ![alt text](assets/addGuideline/main_page_create_folder.png)
+11. Click on the newly created folder and click "Upload".
+  ![alt text](assets/addGuideline/main_page_load_file.png)
