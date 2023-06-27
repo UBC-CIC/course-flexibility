@@ -96,7 +96,7 @@ This page gives details on the meta-data of the course, the syllabus, and an ana
 
 This page is accessed by clicking on the main navigation bar called "Settings". This will give a user the ability to add/remove guidelines.
 
-In the middle is a list of guidelines that are analyzed or currently analyzing. It provides information such as guideline shortcut/code and guideline description for reference.
+In the middle is a list of guidelines that are analyzed or currently analyzing. It provides information such as guideline shortcut and guideline description for reference.
 ![alt text](assets/setting/setting_main.png)
 
 ### Add Guideline
