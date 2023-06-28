@@ -10,7 +10,7 @@ Once you have deployed the solution, the following user guide will help you navi
 | :------------------------------------------  | :---------------------------------------------------- |
 | [Dashboard](#Dashboard)                      | Data visualization based on faculty and campus        |
 | [Course](#Course)                            | Data visualization based on courses                   |
-| [Setting](#Setting)                          | Make changes to guidelines                            |
+| [Settings](#Settings)                          | Make changes to guidelines                            |
 | [Load Syllabi](#Load-Syllabi)                | Load new syllabi to the system                        |
 
 **Note:** The screenshots contained in this User Guide show some information as redacted to obscure data that is not fully up to date.
@@ -26,7 +26,7 @@ By default, the dashboard page will load the faculty page. A user can also acces
 
 * Faculty - name of the faculty available
 * Year - a list containing the year where the data has analyzed
-* Campus - name of the campus where the faculty offers
+* Campus - name of the campus where the faculty is offered
 * Number of Courses (Analyzed) - the number of courses that have been analyzed throughout the year for a specific faculty
 
 A user can access a more detailed analysis of a faculty by clicking the arrow on the right of each faculty (i.e., each row). This will open another tab as shown in the [Faculty Analysis](#Faculty-Analysis) screenshot.
@@ -34,6 +34,8 @@ A user can access a more detailed analysis of a faculty by clicking the arrow on
 ![alt text](assets/dashboard/dashboard_faculty.png)
 
 #### Faculty Analysis
+This page can be accessed by clicking on the right pointing arrow of each faculty.
+![alt text](assets/dashboard/dashboard_faculty_data_how_to.png)
 
 The graph below shows the number of courses, in percentage, of a selected faculty (e.g., Faculty of Science) that were analyzed as "Yes" for a given guideline. By hovering the mouse cursor on the data points, a user can see a detailed result of each guideline in a given year. For example, 81% of all the analyzed courses in the Faculty of Science were analyzed as "Yes" for the "online recordings of lectures can be accessed" (i.e., REC) guideline in 2023. Each guideline has a guideline code or shortcut to help shorten the representation of a guideline.
 
@@ -44,7 +46,7 @@ The graph below shows the number of courses, in percentage, of a selected facult
 A user can access the campus page through the top tab under the main navigation bar. This page contains a table with information about each campus.
 
 * Campus - the name of the campus available
-* Year - a list containing the year where the data has analyzed
+* Year - a list containing the year where the data was analyzed
 * Faculty - a list of faculty where the data has been analyzed for a specific campus
 
 A user can access a more detailed analysis of a campus by clicking the arrow on the right of each campus. This will open another tab as shown in the [Campus Analysis](#Campus-Analysis) screenshot.
@@ -52,6 +54,8 @@ A user can access a more detailed analysis of a campus by clicking the arrow on 
 ![alt text](assets/dashboard/dashboard_campus.png)
 
 ### Campus Analysis
+This page can be accessed by clicking on the right pointing arrow of each campus.
+![alt text](assets/dashboard/dashboard_campus_data_how_to.png)
 
 The graph below is similar to the graph in the [Faculty Analysis](#Faculty-Analysis) page, except that the data is based on the selected campus.
 ![alt text](assets/dashboard/dashboard_campus_data.png)
@@ -66,7 +70,7 @@ Below the filters is a table showing the meta-data of a course and an analysis s
 
 * Course Code - the subject of a course
 * Course Number - the number of a course
-* Year - the year where a course has analyzed
+* Year - the year where a course was analyzed
 * Campus - the campus where a course is in
 * Faculty - the name of the faculty a course belongs to
 * Analysis Result - a summary of the analysis from the machine learning model
@@ -80,7 +84,8 @@ Similar to the faculty/campus page, clicking on the arrow on the right will brin
 
 ### Advanced Filter
 
-There are four options to select for each guideline: All, Yes, Maybe, and No.
+There are four options to select for each guideline: All, Yes, Maybe, and No. When a guideline is analyzed as Yes, it means that the machine learning model is agreed with the guideline; this also applies to No and Maybe which disagree or unsure with the guideline, respectively. For example, if the result is Yes for the "Online recordings of lectures can be accessed" guideline, a user can read as "There is an online recording for lectures" which is agreed with the statement.
+
 * All, means all courses (i.e., display everything regardless of the result)
 * Yes, means display only results that are "Yes" (i.e., a list of syllabi that agrees with a guideline)
 * Maybe, means display only results that could not distinguish between "Yes" and "No" (i.e., a list of syllabi that is unsure to agrees or disagrees with a guideline)
@@ -151,7 +156,7 @@ To delete guideline(s), a user needs to select guideline(s) to delete, and a del
 
 # Load Syllabi
 
-When there are new data (i.e., syllabi) to load into a databsed for analysis, user needs to use the AWS Console interface. The developers should grant access information (including username and password) to the AWS Console. In the AWS Console:
+When there are new data (i.e., syllabi) to load into a databased for analysis, user needs to use the AWS Console interface. The developers should grant access information (including username and password) to the AWS Console. In the AWS Console:
 
 1. Search for Amazon S3 in the search bar and click on it
 2. On the left navigation bar, click on "Buckets" 
