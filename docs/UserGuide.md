@@ -4,6 +4,8 @@
 
 - [Deployment Guides](./DeploymentGuide.md)
 
+Once you have deployed the solution, the following user guide will help you navigate the functions available.
+
 | Index                                        | Description                                           |
 | :------------------------------------------  | :---------------------------------------------------- |
 | [Dashboard](#Dashboard)                      | Data visualization based on faculty and campus        |
@@ -20,7 +22,12 @@ The Dashboard page shows two types of content ([Faculty](#Faculty) and [Campus](
 
 ### Faculty
 
-By default, the dashboard page will load the faculty page. A user can also access the faculty page through the top tab below the main navigation bar. This page contains a table with information about each faculty in the database.
+By default, the dashboard page will load the faculty page. A user can also access the faculty page through the top tab below the main navigation bar. This page contains a table with information about each faculty in the database including:
+
+* Faculty - name of the faculty available
+* Year - a list containing the year where the data has analyzed
+* Campus - name of the campus where the faculty offers
+* Number of Courses (Analyzed) - the number of courses that have been analyzed throughout the year for a specific faculty
 
 A user can access a more detailed analysis of a faculty by clicking the arrow on the right of each faculty (i.e., each row). This will open another tab as shown in the [Faculty Analysis](#Faculty-Analysis) screenshot.
 
@@ -35,6 +42,10 @@ The graph below shows the number of courses, in percentage, of a selected facult
 ### Campus
 
 A user can access the campus page through the top tab under the main navigation bar. This page contains a table with information about each campus.
+
+* Campus - the name of the campus available
+* Year - a list containing the year where the data has analyzed
+* Faculty - a list of faculty where the data has been analyzed for a specific campus
 
 A user can access a more detailed analysis of a campus by clicking the arrow on the right of each campus. This will open another tab as shown in the [Campus Analysis](#Campus-Analysis) screenshot.
 
@@ -51,7 +62,16 @@ This page is accessed by clicking on the main navigation bar called "Courses". T
 
 On the top of the page are the filters which includes a filter base on campus, course subject, course number, and faculty. There is also an [Advanced Filter](#Advanced-Filter) option to access more complex filters. 
 
-Below the filters is a table showing the meta-data of a course and an analysis summary in each row. Similar to the faculty/campus page, clicking on the arrow on the right will bring a user to the [Course More Detail](#Course-More-Detail) page. Clicking on any box in the Analysis Result column will load a pop-up explaining the result as shown in [Course Pop Up](#Course-Pop-Up). Each box has various colors depending on the analysis: 
+Below the filters is a table showing the meta-data of a course and an analysis summary in each row. It includes the following:
+
+* Course Code - the subject of a course
+* Course Number - the number of a course
+* Year - the year where a course has analyzed
+* Campus - the campus where a course is in
+* Faculty - the name of the faculty a course belongs to
+* Analysis Result - a summary of the analysis from the machine learning model
+
+Similar to the faculty/campus page, clicking on the arrow on the right will bring a user to the [Course More Detail](#Course-More-Detail) page. Clicking on any box in the Analysis Result column will load a pop-up explaining the result as shown in [Course Pop Up](#Course-Pop-Up). Each box has various colors depending on the analysis: 
 * Green indicates "Yes" result
 * Red indicates "No" result
 * Orange indicates "Maybe" result
@@ -61,19 +81,22 @@ Below the filters is a table showing the meta-data of a course and an analysis s
 ### Advanced Filter
 
 There are four options to select for each guideline: All, Yes, Maybe, and No.
-* All, means don't care (i.e., display everything regardless of the result)
-* Yes, means display only results that are "Yes"
-* Maybe, means display only results that could not distinguish between "Yes" and "No"
-* No, means display only results that are "No"
+* All, means all courses (i.e., display everything regardless of the result)
+* Yes, means display only results that are "Yes" (i.e., a list of syllabi that agrees with a guideline)
+* Maybe, means display only results that could not distinguish between "Yes" and "No" (i.e., a list of syllabi that is unsure to agrees or disagrees with a guideline)
+* No, means display only results that are "No" (i.e., a list of syllabi that disagrees with a guideline)
 
 ![alt text](assets/course/course_main_advance_filter.png)
 
-### Course Pop Up
+### Course Pop-Up
 
-The Pop-up gives detail about what the guideline code represents, the result in text form, and the confidence level.
+The Pop-up gives detail about the result of the analysis in text form (Yes, No, or Maybe), the confidence level in percentage, and a guideline description based on the selected guideline code. The pop-up is shown when the user clicks on one of the result boxes in the Analysis Result section. The pop-up locates at the bottom right corner of the screen, and it should hide around six seconds since it has clicked.
 ![alt text](assets/course/course_main_info_alert.png)
 
-### Course Load More
+Here is a closer look to the pop-up.
+![alt text](assets/course/course_main_info_alert_1.png)
+
+### Load More Button on Course Page
 
 The load more button below the table will load new data from the database in the cloud. This button will be hidden after it loads all the data available.
 
@@ -83,6 +106,8 @@ The load more button below the table will load new data from the database in the
 ![alt text](assets/course/course_main_load_more.png)
 
 #### Course More Detail
+This page can be accessed by clicking on the right pointing arrow of each course.
+![alt text](assets/course/course_data_how_to.png)
 
 This page gives details on the meta-data of the course, the syllabus, and an analysis of each guideline. The analysis of each guideline shows the result as a confidence score and also the sentences that the machine learning model extracted from the syllabus. The confidence score is a percentage that represents how accurately the model is detected for a guideline. The higher the confidence score, the more accurate the model detects.
 
@@ -92,11 +117,11 @@ This page gives details on the meta-data of the course, the syllabus, and an ana
 
 ![alt text](assets/course/course_data.png)
 
-## Setting
+## Settings
 
-This page is accessed by clicking on the main navigation bar called "Settings". This will give a user the ability to add/remove guidelines.
+This page is accessed by clicking on the main navigation bar called "Settings". This allows a user to add or remove guidelines and rerun the machine learning model on all the syllabi.
 
-In the middle is a list of guidelines that are analyzed or currently analyzing. It provides information such as guideline shortcut and guideline description for reference.
+In the middle is a list of guidelines that are analyzed or are currently being analyzed. It provides information such as guideline shortcuts (or guideline codes) and guideline descriptions which can be used as a reference to look for the meaning of a guideline shortcut.
 ![alt text](assets/setting/setting_main.png)
 
 ### Add Guideline
@@ -126,7 +151,7 @@ To delete guideline(s), a user needs to select guideline(s) to delete, and a del
 
 # Load Syllabi
 
-To load new syllabi, users need to use the AWS Console interface. In the AWS Console:
+When there are new data (i.e., syllabi) to load into a databsed for analysis, user needs to use the AWS Console interface. The developers should grant access information (including username and password) to the AWS Console. In the AWS Console:
 
 1. Search for Amazon S3 in the search bar and click on it
 2. On the left navigation bar, click on "Buckets" 
@@ -141,3 +166,7 @@ contain the string `courseflexibilitystorage`.
    ![alt text](assets/addGuideline/main_page_create_folder.png)
 11. Click on the newly created folder and click "Upload".
   ![alt text](assets/addGuideline/main_page_load_file.png)
+
+After loaded all the data to AWS Console the machine learning model with automaticall trigger to start the analysis process. 
+
+**Note:** This process of loading data to the database could be complicated. Some future considerations for developers might be to create a user interface for loading syllabi. The interface should handle all the processes needed to accomplish the step above in a more user-friendly way.
