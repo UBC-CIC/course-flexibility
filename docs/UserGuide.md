@@ -18,7 +18,7 @@ Once you have deployed the solution, the following user guide will help you navi
 
 ## Dashboard
 
-The Dashboard page shows two types of content ([Faculty](#Faculty) and [Campus](#Campus)). The tab on top allows a user to switch between the two contents. In each content, there is a filtering mechanism to search through data. Below the filter component there is a table that displays information about each faculty/campus.
+The Dashboard page shows two types of content ([Faculty](#Faculty) and [Campus](#Campus)). The tab on top allows a user to switch between the two contents. In each content, there is a filtering mechanism to search through data. Below the filter component, there is a table that displays information about each faculty/campus.
 
 ### Faculty
 
@@ -64,7 +64,7 @@ The graph below is similar to the graph in the [Faculty Analysis](#Faculty-Analy
 
 This page is accessed by clicking on the main navigation bar called "Courses". This page will give analysis results for each course.
 
-On the top of the page are the filters which includes a filter base on campus, course subject, course number, and faculty. There is also an [Advanced Filter](#Advanced-Filter) option to access more complex filters. 
+On the top of the page are the filters which include a filter base on campus, course subject, course number, and faculty. There is also an [Advanced Filter](#Advanced-Filter) option to access more complex filters. 
 
 Below the filters is a table showing the meta-data of a course and an analysis summary in each row. It includes the following:
 
@@ -84,21 +84,23 @@ Similar to the faculty/campus page, clicking on the arrow on the right will brin
 
 ### Advanced Filter
 
-There are four options to select for each guideline: All, Yes, Maybe, and No. When a guideline is analyzed as Yes, it means that the machine learning model is agreed with the guideline; this also applies to No and Maybe which disagree or unsure with the guideline, respectively. For example, if the result is Yes for the "Online recordings of lectures can be accessed" guideline, a user can read as "There is an online recording for lectures" which is agreed with the statement.
+There are four options to select for each guideline: All, Yes, Maybe, and No. When a guideline is analyzed as Yes, it means that the machine learning model is agreed with the guideline; this also applies to No and Maybe which disagree or unsure with the guideline, respectively. 
+
+Use the guideline “Online recordings of lectures can be accessed” as an example. If the result of this guideline is “Yes” for a syllabus, then that means that the machine learning model determined that the extracted sentences from that syllabus support the guideline (i.e., The model determined that: Online recordings of lectures **can** be accessed). If the result of this guideline is “No”, then that means that the machine learning model determined that the extracted sentences do not support the guideline (i.e., The model determined that: Online recording of lectures **cannot** be accessed). Finally, if the result of the guideline is “Maybe”, then that means that the machine learning model lacks confidence in whether the extracted sentences support or do not support the guideline (i.e., The model determined that: Online recordings of lectures can **maybe** be accessed). 
 
 * All, means all courses (i.e., display everything regardless of the result)
-* Yes, means display only results that are "Yes" (i.e., a list of syllabi that agrees with a guideline)
-* Maybe, means display only results that could not distinguish between "Yes" and "No" (i.e., a list of syllabi that is unsure to agrees or disagrees with a guideline)
-* No, means display only results that are "No" (i.e., a list of syllabi that disagrees with a guideline)
+* Yes, means display only results that are "Yes" (i.e., a list of syllabi that agree with a guideline)
+* Maybe, means display only results that could not distinguish between "Yes" and "No" (i.e., a list of syllabi that are unsure if they agree or disagree with a guideline)
+* No, means display only results that are "No" (i.e., a list of syllabi that disagree with a guideline)
 
 ![alt text](assets/course/course_main_advance_filter.png)
 
 ### Course Pop-Up
 
-The Pop-up gives detail about the result of the analysis in text form (Yes, No, or Maybe), the confidence level in percentage, and a guideline description based on the selected guideline code. The pop-up is shown when the user clicks on one of the result boxes in the Analysis Result section. The pop-up locates at the bottom right corner of the screen, and it should hide around six seconds since it has clicked.
+The Pop-up gives detail about the result of the analysis in text form (Yes, No, or Maybe), the confidence level in percentage, and a guideline description based on the selected guideline code. The pop-up is shown when the user clicks on one of the result boxes in the Analysis Result section. The pop-up locates at the bottom right corner of the screen, and it should hide around six seconds after it has been clicked.
 ![alt text](assets/course/course_main_info_alert.png)
 
-Here is a closer look to the pop-up.
+Here is a closer look at the pop-up.
 ![alt text](assets/course/course_main_info_alert_1.png)
 
 ### Load More Button on Course Page
@@ -156,7 +158,7 @@ To delete guideline(s), a user needs to select guideline(s) to delete, and a del
 
 # Load Syllabi
 
-When there are new data (i.e., syllabi) to load into a databased for analysis, user needs to use the AWS Console interface. The developers should grant access information (including username and password) to the AWS Console. In the AWS Console:
+A user may want to add more syllabi to conduct an analysis of these new syllabi. The new syllabi’s results would be displayed on the web app along with the results of the syllabi that are already in the database once the analysis process is finished. To add new syllabi for analysis, the user needs to use the AWS Console interface. The developers should grant access information (including username and password) to the AWS Console. In the AWS Console:
 
 1. Search for Amazon S3 in the search bar and click on it
 2. On the left navigation bar, click on "Buckets" 
