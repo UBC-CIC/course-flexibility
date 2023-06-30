@@ -31,7 +31,7 @@ By default, the dashboard page will load the faculty page. A user can also acces
 
 A user can access a more detailed analysis of a faculty by clicking the arrow on the right of each faculty (i.e., each row). This will open another tab as shown in the [Faculty Analysis](#Faculty-Analysis) screenshot.
 
-![alt text](assets/dashboard/dashboard_faculty.png) to do 1
+![alt text](assets/11%20dashboard_faculty.png)
 
 #### Faculty Analysis
 This page can be accessed by clicking on the right pointing arrow of each faculty.
@@ -80,7 +80,7 @@ Similar to the faculty/campus page, clicking on the arrow on the right will brin
 * Red indicates "No" result
 * Orange indicates "Maybe" result
 
-![alt text](assets/2%20syllabus%20userguide%20replace%20-%20course_main.png) to do 2
+![alt text](assets/22%20syllabus%20userguide%20replace%20-%20course_main.png)
 
 ### Advanced Filter
 
@@ -98,7 +98,7 @@ Use the guideline “Online recordings of lectures can be accessed” as an exam
 ### Course Pop-Up
 
 The Pop-up gives detail about the result of the analysis in text form (Yes, No, or Maybe), the confidence level in percentage, and a guideline description based on the selected guideline code. The pop-up is shown when the user clicks on one of the result boxes in the Analysis Result section. The pop-up is located at the bottom right corner of the screen, and it should hide around six seconds after it has been clicked.
-![alt text](assets/3%20syllabus%20userguide%20replace%20-%20course_main_info_alert.png) to do 3
+![alt text](assets/33%20syllabus%20userguide%20replace%20-%20course_main_info_alert.png)
 
 Here is a closer look at the pop-up.
 ![alt text](assets/course/course_main_info_alert_1.png)
@@ -110,11 +110,11 @@ The load more button below the table will load new data from the database in the
 **Note:** When doing filters on the table, it only filters data that is currently loaded (i.e., not the data in the database). Hence, if a user wants to get all the results for a selected filter, the user has to load all the data from the data first and then apply the filters.
 <br>
 
-![alt text](assets/4%20syllabus%20userguide%20replace%20-%20course_main_load_more.png) to do 4
+![alt text](assets/44%20syllabus%20userguide%20replace%20-%20course_main_load_more.png)
 
 #### Course More Detail
 This page can be accessed by clicking on the right pointing arrow of each course.
-![alt text](assets/5%20syllabus%20userguide%20replace%20-%20course_data_how_to.png) to do 5
+![alt text](assets/55%20syllabus%20userguide%20replace%20-%20course_data_how_to.png)
 
 This page gives details on the meta-data of the course, the syllabus, and an analysis of each guideline. The analysis of each guideline shows the result as a confidence score and also the sentences that the machine learning model extracted from the syllabus. The confidence score is a percentage that represents how accurately the model is detected for a guideline. The higher the confidence score, the more accurate the model detects.
 
